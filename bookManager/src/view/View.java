@@ -122,7 +122,12 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private JButton bRootManagerUpdate = new JButton("管理员记录修改");
 	private JButton bReaderLib = new JButton("书籍借阅");
 	private JButton bReaderMessage = new JButton("用户信息完善");
+	private JButton bReaderLibSelectName = new JButton("通过书名查询");
+	private JButton bReaderLibSelectKinds = new JButton("通过书籍类型查询");
+	private JButton bReaderLibLib = new JButton("借阅选中的书籍");
 	private TimerTask tt = new TimerTask() {
+		
+		
 		
 		@Override
 		public void run() {
@@ -385,9 +390,8 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 //		RootBook.add(bRootBookSelect);
 		
 		addBookTable();
-		jtRootBook = new JTable(DataBook, columnNames);
+		jtRootBook = new mytable(DataBook, columnNames);
 		jtRootBook.setBounds(x, y, 800, 400);
-		jtRootBook.setEnabled(false);
 		jtRootBook.getTableHeader().setReorderingAllowed(false);
 		jtRootBook.getTableHeader().setResizingAllowed(false); 
 		JScrollPane JSP= new JScrollPane(jtRootBook);
@@ -479,12 +483,20 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		addBookTable();
 		jtReaderBook = new mytable(DataBook, columnNames);
 		jtReaderBook.setBounds(x, y, 800, 400);
-		jtReaderBook.setEnabled(false);
 		jtReaderBook.getTableHeader().setReorderingAllowed(false);
 		jtReaderBook.addMouseListener(this);
 		JScrollPane JSP= new JScrollPane(jtReaderBook);
 		JSP.setBounds(x, y=y+30, 800, 400);
 		ReaderLib.add(JSP);
+		bReaderLibSelectName.setBounds(x=x+800, y, width, height);
+		bReaderLibSelectKinds.setBounds(x, y=y+30, width, height);
+		bReaderLibLib.setBounds(x, y+100, width, height);
+		bReaderLibSelectName.addActionListener(this);
+		bReaderLibSelectKinds.addActionListener(this);
+		bReaderLibLib.addActionListener(this);
+		ReaderLib.add(bReaderLibSelectName);
+		ReaderLib.add(bReaderLibSelectKinds);
+		ReaderLib.add(bReaderLibLib);
 		
 		
 		ReaderLib.setVisible(false);
@@ -516,9 +528,11 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			main.setVisible(false);
 			NoPwd.setVisible(true);
 		}else if (a.equals(bLoginLogin)) {
-			String name = jtfLoginName.getText();
+			String name = uname;
+			name = jtfLoginName.getText();
 			String pwd =  new String(jpfLoginPwd.getPassword());
-			int n = factory.getReaderActionImpl().Login(name, pwd);
+			int n = 0;
+			n = factory.getReaderActionImpl().Login(name, pwd);
 			power = n;
 			switch (n) {
 			case 0:
@@ -532,7 +546,9 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			}
 			if (n==0) {
 				uname = name;
-				Reader.add(addJLabel(uname, 50, 10, 200, 30));
+				Reader.add(addJLabel(uname, 100, 10, 200, 30));
+				Login.setVisible(false);
+				Reader.setVisible(true);
 			}else if (n==1) {
 				
 			}else if (n==2) {
@@ -640,6 +656,35 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		}else if (a.equals(bReaderMessage)) {
 			ReaderLib.setVisible(false);
 			ReaderMessage.setVisible(true);
+		}else if (a.equals(bReaderLibLib)) {
+			int[] Rows = jtReaderBook.getSelectedRows();//行
+			String input = "";
+			if (Rows.length!=0&&Rows.length<=15) {
+				for (int i = 0; i < Rows.length; i++) {
+					if (i==Rows.length-2) {
+						input = input +"《"+DataBook.get(i).get(1)+"》"+"和";
+					}else if (i==Rows.length-1) {
+						input = input+"《" +DataBook.get(i).get(1)+"》"+"";
+					}else {
+						input = input +"《"+DataBook.get(i).get(1)+"》"+"、";
+					}
+				}
+				int answer = JOptionPane.showConfirmDialog(this, "您确定要借阅"+input+"吗？");
+				switch (answer) {
+				case 0:
+					
+					break;
+				case 1:
+				case 2:
+					break;
+				default:
+					break;
+				}
+			}else if(Rows.length==0){
+				JOptionPane.showMessageDialog(this, "请至少选中一本书");
+			}else {
+				JOptionPane.showMessageDialog(this, "选择超过了"+(Rows.length-15)+"书");
+			}
 		}
 	}
 

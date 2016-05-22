@@ -19,9 +19,8 @@ public class ReaderBizImpl implements ReaderBiz {
 	public int Login(Reader reader) {
 		int n = -1;
 		Reader r2 = f.getReader();
-		reader.setPwd("");
 		r2 = f.getReaderDaoImpl().selectReader(reader);
-		if (r2.getPwd()==reader.getPwd()) {
+		if (r2.getPwd().equals(reader.getPwd())) {
 			n = 0;
 		}
 		return n;

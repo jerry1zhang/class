@@ -6,8 +6,21 @@ public class bookLibHistory {
 	private int bookLibHistory;
 	private Book book;
 	private Reader reader;
-	private Date date;
+	private Date hdate;
+	private Date LibDate;
 	
+	public Date getHdate() {
+		return hdate;
+	}
+	public void setHdate(Date hdate) {
+		this.hdate = hdate;
+	}
+	public Date getLibDate() {
+		return LibDate;
+	}
+	public void setLibDate(Date libDate) {
+		LibDate = libDate;
+	}
 	public int getBookLibHistory() {
 		return bookLibHistory;
 	}
@@ -28,10 +41,10 @@ public class bookLibHistory {
 		this.reader = reader;
 	}
 	public Date getDate() {
-		return date;
+		return hdate;
 	}
-	public void setDate(Date date) {
-		this.date = date;
+	public void setDate(Date hdate) {
+		this.hdate = hdate;
 	}
 	
 }

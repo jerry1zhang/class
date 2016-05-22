@@ -9,10 +9,12 @@ import factory.factory;
 
 public class ReaderActionImpl implements ReaderAction {
 	private factory f = new factory();
-	private ReaderBizImpl rbi = f.getReaderBizImpl();
 	public int Login(String accounts, String pwd) {
 		Reader reader = f.getReader();
+		reader.setAccounts(accounts);
+		reader.setPwd(pwd);
 		int n = f.getReaderBizImpl().Login(reader);
+		System.out.println(n);
 		if (n==-1) {
 			n = f.getManagerActionImpl().Login(accounts, pwd);
 		}
@@ -28,8 +30,8 @@ public class ReaderActionImpl implements ReaderAction {
 		r.setQuestion(question);
 		r.setAnswer(answer);
 		r.setLastLoginTime(date);
-		if(rbi.matching(r)){
-			if(rbi.Register(r)){
+		if(f.getReaderBizImpl().matching(r)){
+			if(f.getReaderBizImpl().Register(r)){
 				flag = 1;
 			}
 		}else {
