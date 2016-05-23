@@ -45,7 +45,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private String[] error = new String[5];
 	private int power = -1;
 	Vector<Vector<Object>> DataBook;
-	ArrayList<Book> bList;
+	ArrayList<Object> bList;
 	Vector<String> columnNames;
 	String time;
 	TableModel tm;
@@ -130,6 +130,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private JButton bReaderMessage = new JButton("用户信息完善");
 	private JButton bReaderLibSelectName = new JButton("通过书名查询");
 	private JButton bReaderLibSelectKinds = new JButton("通过书籍类型查询");
+	private JButton bReaderLibAll = new JButton("全部书籍");
 	private JButton bReaderLibLib = new JButton("借阅选中的书籍");
 	private TimerTask tt = new TimerTask() {
 		
@@ -496,6 +497,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 //				jtReaderBook.updateUI();
 //				jtReaderBook.validate();
 				tm = new DefaultTableModel(DataBook, columnNames);
+				tm.addTableModelListener(this);
 				jtReaderBook.setModel(tm);
 //				jtReaderBook.repaint();
 				jtReaderBook.updateUI();
@@ -510,12 +512,15 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		ReaderLib.add(JSP1);
 		bReaderLibSelectName.setBounds(x=x+800, y, width, height);
 		bReaderLibSelectKinds.setBounds(x, y=y+30, width, height);
+		bReaderLibAll.setBounds(x, y=y+30, width, height);
 		bReaderLibLib.setBounds(x, y+100, width, height);
 		bReaderLibSelectName.addActionListener(this);
 		bReaderLibSelectKinds.addActionListener(this);
+		bReaderLibAll.addActionListener(this);
 		bReaderLibLib.addActionListener(this);
 		ReaderLib.add(bReaderLibSelectName);
 		ReaderLib.add(bReaderLibSelectKinds);
+		ReaderLib.add(bReaderLibAll);
 		ReaderLib.add(bReaderLibLib);
 		
 		
@@ -679,20 +684,22 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		}else if (a.equals(bReaderLibLib)) {
 			int[] Rows = jtReaderBook.getSelectedRows();//行
 			String input = "";
+			ArrayList<Object>b2List = new ArrayList<Object>();
 			if (Rows.length!=0&&Rows.length<=15) {
 				for (int i = 0; i < Rows.length; i++) {
 					if (i==Rows.length-2) {
-						input = input +"《"+DataBook.get(i).get(1)+"》"+"和";
+						input = input +"《"+DataBook.get(Rows[i]).get(1)+"》"+"和";
 					}else if (i==Rows.length-1) {
-						input = input+"《" +DataBook.get(i).get(1)+"》"+"";
+						input = input+"《" +DataBook.get(Rows[i]).get(1)+"》"+"";
 					}else {
-						input = input +"《"+DataBook.get(i).get(1)+"》"+"、";
+						input = input +"《"+DataBook.get(Rows[i]).get(1)+"》"+"、";
 					}
+					b2List.add(i, bList.get(Rows[i]));
 				}
 				int answer = JOptionPane.showConfirmDialog(this, "您确定要借阅"+input+"吗？");
 				switch (answer) {
 				case 0:
-					
+					System.out.println(factory.getBookActionImpl().LibBook(b2List));
 					break;
 				case 1:
 				case 2:
@@ -708,6 +715,16 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		}else if (a.equals(bReaderLibSelectName)) {
 			String input = JOptionPane.showInputDialog(this, "123");
 			addBookTable(input);
+			for (int i = 0; i < DataBook.size(); i++) {
+				for (int j = 0; j < DataBook.get(i).size(); j++) {
+					tm.setValueAt(DataBook.get(i).get(j), i, j);
+				}
+			}
+		}else if (a.equals(bReaderLibSelectKinds)) {
+			
+		}else if (a.equals(bReaderLibAll)) {
+			addBookTable();
+//			tm.setValueAt(null, 0, 0);
 			for (int i = 0; i < DataBook.size(); i++) {
 				for (int j = 0; j < DataBook.get(i).size(); j++) {
 					tm.setValueAt(DataBook.get(i).get(j), i, j);
@@ -833,19 +850,25 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	}
 	private void addBookTable(){
 		DataBook = new Vector<Vector<Object>>();
-		bList = factory.getBookActionImpl().allBook();
+		if (bList==null) {
+			bList = factory.getBookActionImpl().allBook();
+		}
 		Vector<Object> b ;
 		int n = 0;
+		Book B;
 		while (n<bList.size()) {
-			b = new Vector<Object>();
-			b.add(bList.get(n).getBid());
-			b.add(bList.get(n).getName());
-			b.add(bList.get(n).getbDate());
-			b.add(bList.get(n).getbPress());
-			b.add(bList.get(n).getbAuthor());
-			b.add(bList.get(n).getbValue());
-			b.add(bList.get(n).getBookKindsName());
-			DataBook.add(b);
+			B = (Book) bList.get(n);
+			if (B.getStatus()==1) {
+				b = new Vector<Object>();
+				b.add(B.getBid());
+				b.add(B.getName());
+				b.add(B.getbDate());
+				b.add(B.getbPress());
+				b.add(B.getbAuthor());
+				b.add(B.getbValue());
+				b.add(B.getBookKindsName());
+				DataBook.add(b);
+			}
 			n++;
 		}
 		columnNames = new Vector<String>();
@@ -861,17 +884,19 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		DataBook = new Vector<Vector<Object>>();
 		Vector<Object> b ;
 		int n = 0;
+		Book B;
 		while (n<bList.size()) {
-			if (bList.get(n).getName().equals(name)) {
+			B = (Book) bList.get(n);
+			if (B.getStatus()==1)
+			if (B.getName().equals(name)) {
 				b = new Vector<Object>();
-				b.add(bList.get(n).getBid());
-				b.add(bList.get(n).getName());
-				System.out.println(bList.get(n).getName());
-				b.add(bList.get(n).getbDate());
-				b.add(bList.get(n).getbPress());
-				b.add(bList.get(n).getbAuthor());
-				b.add(bList.get(n).getbValue());
-				b.add(bList.get(n).getBookKindsName());
+				b.add(B.getBid());
+				b.add(B.getName());
+				b.add(B.getbDate());
+				b.add(B.getbPress());
+				b.add(B.getbAuthor());
+				b.add(B.getbValue());
+				b.add(B.getBookKindsName());
 				DataBook.add(b);
 			}
 			n++;
@@ -885,30 +910,5 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		columnNames.add("市场价");
 		columnNames.add("书籍种类");
 	}
-	private void addBookTable(int kindno){
-		DataBook = new Vector<Vector<Object>>();
-		bList = factory.getBookActionImpl().allBook();
-		Vector<Object> b ;
-		int n = 0;
-		while (n<bList.size()) {
-			b = new Vector<Object>();
-			b.add(bList.get(n).getBid());
-			b.add(bList.get(n).getName());
-			b.add(bList.get(n).getbDate());
-			b.add(bList.get(n).getbPress());
-			b.add(bList.get(n).getbAuthor());
-			b.add(bList.get(n).getbValue());
-			b.add(bList.get(n).getBookKindsName());
-			DataBook.add(b);
-			n++;
-		}
-		columnNames = new Vector<String>();
-		columnNames.add("书籍编号");
-		columnNames.add( "书名");
-		columnNames.add("入馆时间");
-		columnNames.add("出版社");
-		columnNames.add("作者");
-		columnNames.add("市场价");
-		columnNames.add("书籍种类");
-	}
+
 }

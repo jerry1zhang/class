@@ -8,6 +8,8 @@ public interface BookDao {
 	public boolean createBook(Book book);
 	public boolean delectBook(Book book);
 	public boolean updateBook(Book  book);
+	public boolean updateBookStatus(Book book);
 	public Book selectBook(Book  book);
-	public ArrayList<Book> selectBook();
+	public ArrayList<Object> selectBook();
+	
 }

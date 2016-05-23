@@ -5,5 +5,6 @@ import java.util.ArrayList;
 import entity.Book;
 
 public interface BookBiz {
-	public ArrayList<Book> allBook();
+	public ArrayList<Object> allBook();
+	public boolean LibBook(Object book);
 }

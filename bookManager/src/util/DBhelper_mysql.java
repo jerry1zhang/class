@@ -42,7 +42,9 @@ public class DBhelper_mysql {
 	}
 	public boolean closeConnection(ResultSet rs,Statement s,Connection conn){
 		try {
-			rs.close();
+			if (rs!=null) {
+				rs.close();
+			}
 			s.close();
 			conn.close();
 		} catch (SQLException e) {

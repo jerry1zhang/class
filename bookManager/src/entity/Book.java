@@ -11,6 +11,13 @@ public class Book {
 	private double bValue;//书籍价格
 	private int bookKindsNo;//书籍类型编号
 	private String bookKindsName;//书籍类型名称
+	private int status;//书籍状态
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
 	public int getBid() {
 		return bid;
 	}
