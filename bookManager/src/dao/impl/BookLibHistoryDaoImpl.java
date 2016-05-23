@@ -21,11 +21,12 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		boolean flag = false;
 		int n = 0;
 		try {
-			String sql = "insert into bookLibHistory(bid,rid,hdate) value(?,?,?)";
+			String sql = "insert into bookLibHistory(bid,rid,hdate,libDate) value(?,?,?,?)";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, bookLibHistory.getBook().getBid());
 			ps.setInt(2, reader.getRid());
 			ps.setDate(3, bookLibHistory.getDate());
+			ps.setDate(4, bookLibHistory.getLibDate());
 			n = ps.executeUpdate();
 			if (n!=0) {
 				flag = true;
@@ -44,7 +45,7 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		PreparedStatement ps = null;
 		int n = 0;
 		boolean flag = false;
-		String sql = "delect bookLibHistoryNo,bid,rid,hdate from bookLibHistory where bookLibHistory = ?";
+		String sql = "delect bookLibHistoryNo,bid,rid,hdate,libDate from bookLibHistory where bookLibHistory = ?";
 		try {
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, bookLibHistory.getBookLibHistory());
@@ -65,14 +66,15 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		Connection conn = dbh.getConnection();
 		PreparedStatement ps = null;
 		int n = 0;
-		String sql = "update bookLibHistory set bookLibHistory = ?,bid = ?,rid = ?,hdate = ? where bookLibHistory = ?";
+		String sql = "update bookLibHistory set bookLibHistory = ?,bid = ?,rid = ?,hdate = ?,libDate = ? where bookLibHistory = ?";
 		try {
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, bookLibHistory.getBookLibHistory());
 			ps.setInt(1, bookLibHistory.getBook().getBid());
 			ps.setInt(3, bookLibHistory.getReader().getRid());
 			ps.setDate(4, bookLibHistory.getDate());
-			ps.setInt(5, bookLibHistory.getBookLibHistory());
+			ps.setDate(5, bookLibHistory.getLibDate());
+			ps.setInt(6, bookLibHistory.getBookLibHistory());
 			n = ps.executeUpdate();
 			if (n!=0) {
 				flag = true;
@@ -90,7 +92,7 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			String sql = "select bookLibHistoryNo,bid,rid,hdate from bookLibHistory where rid = ?";
+			String sql = "select bookLibHistoryNo,bid,rid,hdate,libDate from bookLibHistory where rid = ?";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, bookLibHistory.getReader().getRid());
 			rs = ps.executeQuery();
