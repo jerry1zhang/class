@@ -25,7 +25,7 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, bookLibHistory.getBook().getBid());
 			ps.setInt(2, reader.getRid());
-			ps.setDate(3, bookLibHistory.getDate());
+			ps.setDate(3, bookLibHistory.getHdate());
 			ps.setDate(4, bookLibHistory.getLibDate());
 			n = ps.executeUpdate();
 			if (n!=0) {
@@ -72,7 +72,7 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 			ps.setInt(1, bookLibHistory.getBookLibHistory());
 			ps.setInt(1, bookLibHistory.getBook().getBid());
 			ps.setInt(3, bookLibHistory.getReader().getRid());
-			ps.setDate(4, bookLibHistory.getDate());
+			ps.setDate(4, bookLibHistory.getHdate());
 			ps.setDate(5, bookLibHistory.getLibDate());
 			ps.setInt(6, bookLibHistory.getBookLibHistory());
 			n = ps.executeUpdate();
@@ -105,7 +105,7 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 				Reader reader = new Reader();
 				reader.setRid(rs.getInt("rid"));
 				bookLibHistory.setReader(reader);
-				bookLibHistory.setDate(rs.getDate("hdate"));
+				bookLibHistory.setHdate(rs.getDate("hdate"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

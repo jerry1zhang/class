@@ -40,11 +40,6 @@ public class bookLibHistory {
 	public void setReader(Reader reader) {
 		this.reader = reader;
 	}
-	public Date getDate() {
-		return hdate;
-	}
-	public void setDate(Date hdate) {
-		this.hdate = hdate;
-	}
+
 	
 }
