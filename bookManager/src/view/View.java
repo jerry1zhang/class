@@ -39,6 +39,8 @@ import factory.factory;
 
 
 public class View extends JFrame implements ActionListener,KeyListener,MouseListener,FocusListener{
+	public View() {
+	}
 	private factory factory = new factory();
 	//全局变量
 	private String uname = "jerry";
@@ -151,7 +153,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		this.setTitle("图书馆管理系统");
 		this.setBounds(10, 10, 1200, 600);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		this.setLayout(null);
+		getContentPane().setLayout(null);
 		
 		join_main();
 		join_Login();
@@ -163,7 +165,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		
 		timer.schedule(tt, 0, 1000);
 		jltime.setBounds(0, 0, 200, 30);
-		add(jltime);
+		getContentPane().add(jltime);
 		this.setVisible(true);
 	}
 	// 主界面
@@ -194,7 +196,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		main.add(bLogin);
 		main.setLayout(null);
 		main.setBounds(panelX, panelY, panelW, panelH);
-		this.add(main);
+		getContentPane().add(main);
 	}
 	//登陆
 	private void join_Login(){
@@ -227,7 +229,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		Login.add(bLoginBack);
 		
 		Login.setVisible(false);
-		this.add(Login);
+		getContentPane().add(Login);
 	}
 	//注册
 	private void join_Register(){
@@ -286,7 +288,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		
 		
 		Register.setVisible(false);
-		this.add(Register);
+		getContentPane().add(Register);
 		
 	}
 	//忘记密码
@@ -316,7 +318,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		NoPwd.add(bNoPwdBack);
 		
 		NoPwd.setVisible(false);
-		this.add(NoPwd);
+		getContentPane().add(NoPwd);
 	}
 	//root界面
 	private void join_root(){
@@ -346,7 +348,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		join_root_reader();
 		
 		Root.setVisible(false);
-		this.add(Root);
+		getContentPane().add(Root);
 	}
 	//manager界面
 	private void join_manager(){}
@@ -371,7 +373,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		join_reader_lib();
 		
 		Reader.setVisible(false);
-		add(Reader);
+		getContentPane().add(Reader);
 	}
 	//book管理
 	private void join_root_book(){
@@ -699,7 +701,11 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 				int answer = JOptionPane.showConfirmDialog(this, "您确定要借阅"+input+"吗？");
 				switch (answer) {
 				case 0:
-					System.out.println(factory.getBookActionImpl().LibBook(b2List));
+					if (factory.getBookActionImpl().LibBook(b2List)) {
+						JOptionPane.showMessageDialog(this, "恭喜你预定成功！");
+					}else {
+						JOptionPane.showMessageDialog(this, "预定失败，请稍后重试");
+					}
 					break;
 				case 1:
 				case 2:
