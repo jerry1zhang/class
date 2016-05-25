@@ -44,6 +44,11 @@ public class ReaderActionImpl implements ReaderAction {
 		return f.getReaderBizImpl().Login(accounts);
 	}
 
+	public boolean information(Reader reader) {
+		// TODO Auto-generated method stub
+		return f.getReaderBizImpl().information(reader);
+	}
+
 
 
 

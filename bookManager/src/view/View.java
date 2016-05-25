@@ -39,8 +39,7 @@ import factory.factory;
 
 
 public class View extends JFrame implements ActionListener,KeyListener,MouseListener,FocusListener{
-	public View() {
-	}
+
 	private factory factory = new factory();
 	//全局变量
 	private String[] error = new String[5];
@@ -143,6 +142,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private JButton bReaderLibSelectKinds = new JButton("通过书籍类型查询");
 	private JButton bReaderLibAll = new JButton("全部书籍");
 	private JButton bReaderLibLib = new JButton("借阅选中的书籍");
+	private JButton bReaderMessageUpdate = new JButton("提交");
 	private TimerTask tt = new TimerTask() {
 		
 		
@@ -502,7 +502,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		ReaderLib.setLayout(null);
 		ReaderLib.setBounds(panelX+150, panelY+30, panelW-200, panelH-100);
 		
-		ReaderLib.add(addJLabel("注意该系统只提供图书借阅预定，还需用户到图书馆自己提取", x, y=y+30, width+400, height, Color.red));
+		ReaderLib.add(addJLabel("注意该系统只提供图书借阅预定，还需用户到图书馆自己提取", x, y, width+400, height, Color.red));
 		
 		tm = new DefaultTableModel(DataBook, columnNames);
 		tm.addTableModelListener(new TableModelListener() {
@@ -552,14 +552,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		ReaderHistory.setLayout(null);
 		ReaderHistory.setBounds(panelX+150, panelY+30, panelW-200, panelH-100);
 		
-		addBookHistory(1);
-		tm_readerHistory = new DefaultTableModel(DataHistory, HcolumnNames);
 		
-		jtReaderHistory = new mytable(tm_readerHistory);
-		jtReaderHistory.setBounds(x, y, 800, 400);
-		JScrollPane jsp = new JScrollPane(jtReaderHistory);
-		jsp.setBounds(x, y, 800, 400);
-		ReaderHistory.add(jsp);
 		
 		ReaderHistory.setVisible(false);
 		Reader.add(ReaderHistory);
@@ -572,6 +565,17 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		int height = 30;
 		ReaderMessage.setLayout(null);
 		ReaderMessage.setBounds(panelX+150, panelY+30, panelW-200, panelH-100);
+		
+		ReaderMessage.add(addJLabel("真实姓名：", x, y, width, height));
+		jtfReaderMessageName.setBounds(x+100, y, width, height);
+		ReaderMessage.add(jtfReaderMessageName);
+		ReaderMessage.add(addJLabel("身份证号：", x, y=y+30, width, height));
+		jtfReaderMessageIDcard.setBounds(x+100, y, width, height);
+		ReaderMessage.add(jtfReaderMessageIDcard);
+		bReaderMessageUpdate.setBounds(x, y=y+30, width, height);
+		bReaderMessageUpdate.addActionListener(this);
+		ReaderMessage.add(bReaderMessageUpdate);
+		
 		
 		ReaderMessage.setVisible(false);
 		Reader.add(ReaderMessage);
@@ -732,6 +736,13 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			ReaderHistory.setVisible(false);
 		}else if (a.equals(bReaderHistory)) {
 			addBookHistory(user.getRid());
+			System.out.println(user.getRid());
+			tm_readerHistory = new DefaultTableModel(DataHistory, HcolumnNames);
+			jtReaderHistory = new mytable(tm_readerHistory);
+			jtReaderHistory.setBounds(10, 10, 800, 400);
+			JScrollPane jsp = new JScrollPane(jtReaderHistory);
+			jsp.setBounds(10, 10, 800, 400);
+			ReaderHistory.add(jsp);
 			ReaderLib.setVisible(false);
 			ReaderMessage.setVisible(false);
 			ReaderHistory.setVisible(true);
@@ -782,12 +793,27 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			
 		}else if (a.equals(bReaderLibAll)) {
 			addBookTable();
-			tm.setValueAt("2", 0, 0);
-//			for (int i = 0; i < DataBook.size(); i++) {
-//				for (int j = 0; j < DataBook.get(i).size(); j++) {
-//					tm.setValueAt(DataBook.get(i).get(j), i, j);
-//				}
-//			}
+			for (int i = 0; i < DataBook.size(); i++) {
+				for (int j = 0; j < DataBook.get(i).size(); j++) {
+					tm.setValueAt(DataBook.get(i).get(j), i, j);
+				}
+			}
+		}else if (a.equals(bReaderMessageUpdate)) {
+			String uname = jtfReaderMessageName.getText();
+			String IDcard = jtfReaderMessageIDcard.getText();
+			Pattern p = Pattern.compile("^(\\d{18,18}|\\d{15,15}|\\d{17,17}x)$");
+			Matcher m = p.matcher(IDcard);
+			if (m.find()) {
+				if (factory.getReaderActionImpl().information(user)) {
+					JOptionPane.showMessageDialog(this, "修改成功");
+				}else {
+					JOptionPane.showMessageDialog(this, "修改失败");
+				}
+			}else {
+				JOptionPane.showMessageDialog(this, "身份证号不合法");
+			}
+			user.setName(uname);
+			user.setIDcard(IDcard);
 		}
 	}
 

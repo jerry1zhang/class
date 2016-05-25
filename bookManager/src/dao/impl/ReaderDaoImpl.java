@@ -117,4 +117,28 @@ public class ReaderDaoImpl implements ReaderDao {
 		return reader;
 	}
 
+	public boolean easyUpdateReader(Reader reader) {
+		boolean flag = false;
+		DBhelper_mysql dbh = f.getDBhelper_mysql();
+		Connection conn = dbh.getConnection();
+		PreparedStatement ps = null;
+		int n = 0;
+		String sql = "update reader set name=?,IDcard=?,LastLoginTime=? where rid = ?";
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, reader.getName());
+			ps.setString(2, reader.getIDcard());
+			ps.setDate(3, reader.getLastLoginTime());
+			ps.setInt(4, reader.getRid());
+			n = ps.executeUpdate();
+			if (n!=0) {
+				flag = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		dbh.closeConnection(null, ps, conn);
+		return flag;
+	}
+
 }

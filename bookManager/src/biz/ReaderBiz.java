@@ -7,4 +7,5 @@ public interface ReaderBiz {
 	public int Login(Reader reader);
 	public boolean matching(Reader reader);//∆•≈‰
 	public Reader Login(String accounts);
+	public boolean information(Reader reader);
 }

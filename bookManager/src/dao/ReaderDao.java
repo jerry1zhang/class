@@ -7,4 +7,5 @@ public interface ReaderDao {
 	public boolean delectReader(Reader reader);
 	public boolean updateReader(Reader reader);
 	public Reader selectReader(Reader reader);
+	public boolean easyUpdateReader(Reader reader);
 }
