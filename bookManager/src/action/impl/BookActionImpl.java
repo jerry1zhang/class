@@ -3,6 +3,7 @@ package action.impl;
 import java.util.ArrayList;
 
 import action.BookAction;
+import entity.Reader;
 import factory.factory;
 
 public class BookActionImpl implements BookAction {
@@ -26,6 +27,9 @@ public class BookActionImpl implements BookAction {
 			flag = true;
 		}
 		return flag;
+	}
+	public ArrayList<Object> readerBookHistory(Reader reader) {
+		return f.getBookBizImpl().readerHistory(reader);
 	}
 
 }

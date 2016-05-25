@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import dao.BookLibHistoryDao;
 import entity.Book;
@@ -113,5 +114,45 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		dbh.closeConnection(rs, ps, conn);
 		return bookLibHistory;
 	}
+
+	public ArrayList<Object> selectAllBookHistory() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public ArrayList<Object> selectReaderBookHistory(Reader reader) {
+		DBhelper_mysql dbh = f.getDBhelper_mysql();
+		Connection conn = dbh.getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		ArrayList<Object> srbh = new ArrayList<Object>();
+		try {
+			String sql = "select blh.bookLibHistoryNo,b.bid,b.name,r.rid,r.accounts,blh.hdate,blh.libDate from bookLibHistory blh,book b,reader r where r.rid = ? and blh.bno = b.bid and blh.rid = r.rid";
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, reader.getRid());
+			rs = ps.executeQuery();
+			bookLibHistory bookLibHistory;
+			while (rs.next()) {
+				bookLibHistory = new bookLibHistory();
+				bookLibHistory.setBookLibHistory(rs.getInt("bookLibHistoryNo"));
+				Book book = new Book();
+				book.setBid(rs.getInt("bid"));
+				book.setName(rs.getString("name"));
+				bookLibHistory.setBook(book);
+				Reader r = new Reader();
+				r.setRid(rs.getInt("rid"));
+				r.setAccounts(rs.getString("accounts"));
+				bookLibHistory.setReader(r);
+				bookLibHistory.setHdate(rs.getDate("hdate"));
+				bookLibHistory.setLibDate(rs.getDate("libDate"));
+				srbh.add(bookLibHistory);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		dbh.closeConnection(rs, ps, conn);
+		return srbh;
+	}
+	
 
 }

@@ -13,7 +13,6 @@ import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -35,6 +34,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import entity.Book;
+import entity.bookLibHistory;
 import factory.factory;
 
 
@@ -43,14 +43,18 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	}
 	private factory factory = new factory();
 	//全局变量
-	private String uname = "jerry";
 	private String[] error = new String[5];
 	private int power = -1;
+	entity.Reader user = new entity.Reader();
 	Vector<Vector<Object>> DataBook;
+	Vector<Vector<Object>> DataHistory;
 	ArrayList<Object> bList;
+	ArrayList<Object> HList;
 	Vector<String> columnNames;
+	Vector<String> HcolumnNames;
 	String time;
 	TableModel tm;
+	TableModel tm_readerHistory;
 	JScrollPane JSP1;
 	//判断
 	private JLabel judgment1 = new JLabel();
@@ -78,6 +82,8 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private JTextField jtfNoPwdName = new JTextField();
 	private JTextField jtfNoPwdQuestion = new JTextField();
 	private JTextField jtfNoPwdAnswer = new JTextField();
+	private JTextField jtfReaderMessageName = new JTextField();
+	private JTextField jtfReaderMessageIDcard = new JTextField();
 	//JPasswordField
 	private JPasswordField jpfLoginPwd = new JPasswordField();
 	private JPasswordField jpfRegisterPwd1 = new JPasswordField();
@@ -85,6 +91,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	//JTable
 	private JTable jtRootBook;
 	private JTable jtReaderBook;
+	private JTable jtReaderHistory;
 	//JPanel
 	private JPanel main = new JPanel();
 	private JPanel Login = new JPanel();
@@ -97,6 +104,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private JPanel Reader = new JPanel();
 		private JPanel ReaderLib = new JPanel();
 		private JPanel ReaderMessage = new JPanel();
+		private JPanel ReaderHistory = new JPanel();
 	//JButton
 	private JButton bTest = new JButton("test");
 	private JButton bRegister = new JButton("注册");
@@ -130,6 +138,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private JButton bRootManagerUpdate = new JButton("管理员记录修改");
 	private JButton bReaderLib = new JButton("书籍借阅");
 	private JButton bReaderMessage = new JButton("用户信息完善");
+	private JButton bReaderHistory = new JButton("历史纪录浏览");
 	private JButton bReaderLibSelectName = new JButton("通过书名查询");
 	private JButton bReaderLibSelectKinds = new JButton("通过书籍类型查询");
 	private JButton bReaderLibAll = new JButton("全部书籍");
@@ -366,11 +375,16 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		bReaderLib.setBounds(x, y=y+30, width, height);
 		bReaderLib.addActionListener(this);
 		Reader.add(bReaderLib);
+		bReaderHistory.setBounds(x, y=y+30, width, height);
+		bReaderHistory.addActionListener(this);
+		Reader.add(bReaderHistory);
 		bReaderMessage.setBounds(x, y=y+30, width, height);
 		bReaderMessage.addActionListener(this);
 		Reader.add(bReaderMessage);
 		
 		join_reader_lib();
+		join_reader_history();
+		join_reader_message();
 		
 		Reader.setVisible(false);
 		getContentPane().add(Reader);
@@ -489,7 +503,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		ReaderLib.setBounds(panelX+150, panelY+30, panelW-200, panelH-100);
 		
 		ReaderLib.add(addJLabel("注意该系统只提供图书借阅预定，还需用户到图书馆自己提取", x, y=y+30, width+400, height, Color.red));
-		addBookTable();
+		
 		tm = new DefaultTableModel(DataBook, columnNames);
 		tm.addTableModelListener(new TableModelListener() {
 			
@@ -529,8 +543,39 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		ReaderLib.setVisible(false);
 		Reader.add(ReaderLib);
 	}
+	//用户历史纪录
+	private void join_reader_history(){
+		int x = 10;
+		int y = 10;
+		int width = 150;
+		int height = 30;
+		ReaderHistory.setLayout(null);
+		ReaderHistory.setBounds(panelX+150, panelY+30, panelW-200, panelH-100);
+		
+		addBookHistory(1);
+		tm_readerHistory = new DefaultTableModel(DataHistory, HcolumnNames);
+		
+		jtReaderHistory = new mytable(tm_readerHistory);
+		jtReaderHistory.setBounds(x, y, 800, 400);
+		JScrollPane jsp = new JScrollPane(jtReaderHistory);
+		jsp.setBounds(x, y, 800, 400);
+		ReaderHistory.add(jsp);
+		
+		ReaderHistory.setVisible(false);
+		Reader.add(ReaderHistory);
+	}
 	//用户信息完善
-	private void join_reader_message(){}
+	private void join_reader_message(){
+		int x = 10;
+		int y = 10;
+		int width = 150;
+		int height = 30;
+		ReaderMessage.setLayout(null);
+		ReaderMessage.setBounds(panelX+150, panelY+30, panelW-200, panelH-100);
+		
+		ReaderMessage.setVisible(false);
+		Reader.add(ReaderMessage);
+	}
 	//图书借阅管理员确定界面
 	//root图书管理
 		//图书记录增加
@@ -555,10 +600,10 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			main.setVisible(false);
 			NoPwd.setVisible(true);
 		}else if (a.equals(bLoginLogin)) {
-			String name = uname;
+			String name = user.getAccounts();
 			name = jtfLoginName.getText();
 			String pwd =  new String(jpfLoginPwd.getPassword());
-			int n = 0;
+			int n = -1;
 			n = factory.getReaderActionImpl().Login(name, pwd);
 			power = n;
 			switch (n) {
@@ -566,21 +611,20 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			case 1:
 			case 2:
 				JOptionPane.showMessageDialog(this, "登陆成功");
+				user = factory.getReaderActionImpl().Login(name);
 				break;
 			default:
 				JOptionPane.showMessageDialog(this, "用户名或密码错误");
 				break;
 			}
 			if (n==0) {
-				uname = name;
-				Reader.add(addJLabel(uname, 100, 10, 200, 30));
+				Reader.add(addJLabel(user.getAccounts(), 100, 10, 200, 30));
 				Login.setVisible(false);
 				Reader.setVisible(true);
 			}else if (n==1) {
 				
 			}else if (n==2) {
-				uname = name;
-				Root.add(addJLabel(uname, 50, 10, 200, 30));
+				Root.add(addJLabel(user.getAccounts(), 50, 10, 200, 30));
 				Login.setVisible(false);
 				Root.setVisible(true);
 			}
@@ -678,11 +722,19 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		}else if (a.equals(bRootManagerSelect)) {
 			
 		}else if (a.equals(bReaderLib)) {
+			addBookTable();
 			ReaderLib.setVisible(true);
 			ReaderMessage.setVisible(false);
+			ReaderHistory.setVisible(false);
 		}else if (a.equals(bReaderMessage)) {
 			ReaderLib.setVisible(false);
 			ReaderMessage.setVisible(true);
+			ReaderHistory.setVisible(false);
+		}else if (a.equals(bReaderHistory)) {
+			addBookHistory(user.getRid());
+			ReaderLib.setVisible(false);
+			ReaderMessage.setVisible(false);
+			ReaderHistory.setVisible(true);
 		}else if (a.equals(bReaderLibLib)) {
 			int[] Rows = jtReaderBook.getSelectedRows();//行
 			String input = "";
@@ -730,12 +782,12 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			
 		}else if (a.equals(bReaderLibAll)) {
 			addBookTable();
-//			tm.setValueAt(null, 0, 0);
-			for (int i = 0; i < DataBook.size(); i++) {
-				for (int j = 0; j < DataBook.get(i).size(); j++) {
-					tm.setValueAt(DataBook.get(i).get(j), i, j);
-				}
-			}
+			tm.setValueAt("2", 0, 0);
+//			for (int i = 0; i < DataBook.size(); i++) {
+//				for (int j = 0; j < DataBook.get(i).size(); j++) {
+//					tm.setValueAt(DataBook.get(i).get(j), i, j);
+//				}
+//			}
 		}
 	}
 
@@ -916,5 +968,37 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		columnNames.add("市场价");
 		columnNames.add("书籍种类");
 	}
-
+	private void addBookHistory(int rid){
+		DataHistory = new Vector<Vector<Object>>();
+		if (HList==null) {
+			entity.Reader reader = new entity.Reader();
+			reader.setRid(rid);
+			HList = factory.getBookActionImpl().readerBookHistory(reader);
+		}
+		Vector<Object> h = null;
+		int n = 0;
+		bookLibHistory H;
+//		 blh.bookLibHistoryNo,b.bid,b.name,r.rid,r.accounts,blh.hdate,blh.libDate
+		while (n<HList.size()) {
+			H = (bookLibHistory)HList.get(n);
+			h = new Vector<Object>();
+			h.add(H.getBookLibHistory());
+			h.add(H.getBook().getBid());
+			h.add(H.getBook().getName());
+			h.add(H.getReader().getRid());
+			h.add(H.getReader().getAccounts());
+			h.add(H.getHdate());
+			h.add(H.getLibDate());
+			DataHistory.add(h);
+			n++;
+		}
+		HcolumnNames = new Vector<String>();
+		HcolumnNames.add("历史编号");
+		HcolumnNames.add( "书籍编号");
+		HcolumnNames.add("书籍名称");
+		HcolumnNames.add("读者编号");
+		HcolumnNames.add("读者用户名");
+		HcolumnNames.add("借阅时间");
+		HcolumnNames.add("归还时间");
+	}
 }

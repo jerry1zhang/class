@@ -40,6 +40,10 @@ public class ReaderActionImpl implements ReaderAction {
 		return flag;
 	}
 
+	public Reader Login(String accounts) {
+		return f.getReaderBizImpl().Login(accounts);
+	}
+
 
 
 

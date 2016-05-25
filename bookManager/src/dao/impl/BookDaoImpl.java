@@ -147,9 +147,9 @@ public class BookDaoImpl implements BookDao {
 			String sql = "select b.bid,b.name,b.bDate,b.bPress,b.bAuthor,b.bValue,b.bookKindsNo,k.bookKindsName,b.status from book b,bookKinds k where b.bookKindsNo=k.bookKindsNo";
 			ps = conn.prepareStatement(sql);
 			rs = ps.executeQuery();
-			int n = 0;
+			Book book;
 			while (rs.next()) {
-				Book book = f.getBook();
+				book = f.getBook();
 				book.setBid(rs.getInt("bid"));
 				book.setName(rs.getString("name"));
 				book.setbDate(rs.getDate("bDate"));
@@ -160,7 +160,6 @@ public class BookDaoImpl implements BookDao {
 				book.setBookKindsName(rs.getString("bookKindsName"));
 				book.setStatus(rs.getInt("status"));
 				bList.add(book);
-				n++;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

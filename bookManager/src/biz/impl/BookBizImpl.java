@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import biz.BookBiz;
 import entity.Book;
+import entity.Reader;
 import factory.factory;
 
 public class BookBizImpl implements BookBiz {
@@ -18,6 +19,13 @@ public class BookBizImpl implements BookBiz {
 		b.setStatus(0);
 		flag = f.getBookDaoImpl().updateBookStatus(b);
 		return flag;
+	}
+	public ArrayList<Object> allHistory() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public ArrayList<Object> readerHistory(Reader reader) {
+		return f.getBookLibHistoryDaoImpl().selectReaderBookHistory(reader);
 	}
 
 }

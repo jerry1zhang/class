@@ -7,6 +7,7 @@ import biz.impl.BookBizImpl;
 import biz.impl.ManagerBizImpl;
 import biz.impl.ReaderBizImpl;
 import dao.impl.BookDaoImpl;
+import dao.impl.BookLibHistoryDaoImpl;
 import dao.impl.ManagerDaoImpl;
 import dao.impl.ReaderDaoImpl;
 import entity.*;
@@ -48,6 +49,10 @@ public class factory {
 	public BookDaoImpl getBookDaoImpl(){
 		BookDaoImpl bdi = new BookDaoImpl();
 		return bdi;
+	}
+	public BookLibHistoryDaoImpl getBookLibHistoryDaoImpl(){
+		BookLibHistoryDaoImpl blhdi = new BookLibHistoryDaoImpl();
+		return blhdi;
 	}
 	public DBhelper_mysql getDBhelper_mysql(){
 		DBhelper_mysql dbh = new DBhelper_mysql();

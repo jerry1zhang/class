@@ -37,4 +37,10 @@ public class ReaderBizImpl implements ReaderBiz {
 		return flag;
 	}
 
+	public Reader Login(String accounts) {
+		Reader r = f.getReader();
+		r.setAccounts(accounts);
+		return f.getReaderDaoImpl().selectReader(r);
+	}
+
 }
