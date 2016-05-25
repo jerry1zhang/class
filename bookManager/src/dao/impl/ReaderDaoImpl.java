@@ -108,7 +108,7 @@ public class ReaderDaoImpl implements ReaderDao {
 				reader.setLastLoginTime(rs.getDate("LastLoginTime"));
 				reader.setRkid(rs.getInt("rkid"));
 				reader.setQuestion(rs.getString("question"));
-				reader.setAccounts(rs.getString("answer"));
+				reader.setAnswer(rs.getString("answer"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
