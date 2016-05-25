@@ -360,7 +360,12 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		getContentPane().add(Root);
 	}
 	//manager界面
-	private void join_manager(){}
+	private void join_manager(){
+		int x = 10;
+		int y = 10;
+		int width = 200;
+		int height = 30;
+	}
 	//reader界面
 	private void join_reader(){
 		int x = 10;
