@@ -1,6 +1,7 @@
 package dao.impl;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +16,7 @@ import util.DBhelper_mysql;
 
 public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 	private factory f = new factory();
-	public boolean createBookKinds(bookLibHistory bookLibHistory,Reader reader) {
+	public boolean createbookLibHistory(bookLibHistory bookLibHistory,Reader reader) {
 		DBhelper_mysql dbh = f.getDBhelper_mysql();
 		Connection conn = dbh.getConnection();
 		PreparedStatement ps = null;
@@ -39,7 +40,7 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		return flag;
 	}
 
-	public boolean delectBookKinds(bookLibHistory bookLibHistory) {
+	public boolean delectbookLibHistory(bookLibHistory bookLibHistory) {
 		// TODO Auto-generated method stub
 		DBhelper_mysql dbh = f.getDBhelper_mysql();
 		Connection conn = dbh.getConnection();
@@ -61,7 +62,7 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		return flag;
 	}
 
-	public boolean updateBookKinds(bookLibHistory bookLibHistory) {
+	public boolean updatebookLibHistory(bookLibHistory bookLibHistory) {
 		boolean flag = false;
 		DBhelper_mysql dbh = f.getDBhelper_mysql();
 		Connection conn = dbh.getConnection();
@@ -71,7 +72,7 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		try {
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, bookLibHistory.getBookLibHistory());
-			ps.setInt(1, bookLibHistory.getBook().getBid());
+			ps.setInt(2, bookLibHistory.getBook().getBid());
 			ps.setInt(3, bookLibHistory.getReader().getRid());
 			ps.setDate(4, bookLibHistory.getHdate());
 			ps.setDate(5, bookLibHistory.getLibDate());
@@ -87,7 +88,7 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		return flag;
 	}
 
-	public bookLibHistory selectBookKinds(bookLibHistory bookLibHistory) {
+	public bookLibHistory selectbookLibHistory(bookLibHistory bookLibHistory) {
 		DBhelper_mysql dbh = f.getDBhelper_mysql();
 		Connection conn = dbh.getConnection();
 		PreparedStatement ps = null;
@@ -152,6 +153,28 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		}
 		dbh.closeConnection(rs, ps, conn);
 		return srbh;
+	}
+
+	public boolean updatebookLibHistory(int bookLibHistoryNo, Date LibDate) {
+		boolean flag = false;
+		DBhelper_mysql dbh = f.getDBhelper_mysql();
+		Connection conn = dbh.getConnection();
+		PreparedStatement ps = null;
+		int n = 0;
+		String sql = "update bookLibHistory set libDate = ? where bookLibHistory = ?";
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, bookLibHistoryNo);
+			ps.setDate(2, LibDate);
+			n = ps.executeUpdate();
+			if (n!=0) {
+				flag = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		dbh.closeConnection(null, ps, conn);
+		return flag;
 	}
 	
 
