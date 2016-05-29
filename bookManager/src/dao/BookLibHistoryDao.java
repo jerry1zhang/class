@@ -8,11 +8,11 @@ import entity.Reader;
 import entity.bookLibHistory;
 
 public interface BookLibHistoryDao {
-	public boolean createbookLibHistory(bookLibHistory bookLibHistory,Reader reader);
-	public boolean delectbookLibHistory(bookLibHistory bookLibHistory);
-	public boolean updatebookLibHistory(bookLibHistory bookLibHistory);
-	public boolean updatebookLibHistory(int bookLibHistoryNo,Date LibDate);
-	public bookLibHistory selectbookLibHistory(bookLibHistory bookLibHistory);
+	public boolean createBookLibHistory(bookLibHistory bookLibHistory,Reader reader);
+	public boolean delectBookLibHistory(bookLibHistory bookLibHistory);
+	public boolean updateBookLibHistory(bookLibHistory bookLibHistory);
+	public boolean updateBookLibHistory(int bno,Date LibDate);
+	public bookLibHistory selectBookLibHistory(bookLibHistory bookLibHistory);
 	public ArrayList<Object> selectAllBookHistory();
 	public ArrayList<Object> selectReaderBookHistory(Reader reader);
 }

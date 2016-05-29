@@ -13,7 +13,7 @@ public class BookActionImpl implements BookAction {
 		return bList;
 	}
 	public boolean LibBook(ArrayList<Object> bList){
-		//TODO 可以考虑返回失败了那些书
+		//TODO 可以考虑返回失败了哪些书
 		boolean flag = false;
 		int n = 0;
 		

@@ -22,9 +22,11 @@ import java.util.regex.Pattern;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -42,19 +44,20 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 
 	private factory factory = new factory();
 	//全局变量
+	serviceUI su = new serviceUI();
 	private String[] error = new String[5];
 	private int power = -1;
 	entity.Reader user = new entity.Reader();
 	Vector<Vector<Object>> DataBook;
 	Vector<Vector<Object>> DataHistory;
+	Vector<Vector<Object>> DataManagerLib;
 	ArrayList<Object> bList;
 	ArrayList<Object> HList;
 	Vector<String> columnNames;
 	Vector<String> HcolumnNames;
 	String time;
-	TableModel tm;
+	TableModel tm_readerLib;
 	TableModel tm_readerHistory;
-	JScrollPane JSP1;
 	//判断
 	private JLabel judgment1 = new JLabel();
 	private JLabel judgment2 = new JLabel();
@@ -63,6 +66,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private JLabel judgment5 = new JLabel();
 	private JLabel judgment6 = new JLabel();
 	private JLabel judgment7 = new JLabel();
+	private JLabel Message = new JLabel("无");
 	//界面设置
 	//每个面板的单独设定
 	private int panelX = 0;
@@ -70,6 +74,12 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private int panelW = 1200;
 	private int panelH = 600;
 	//界面组件
+	//JMenuItem
+	JMenuItem jmi1 = new JMenuItem("回到首页");
+	JMenuItem jmi2 = new JMenuItem("注销");
+	JMenuItem jmi3 = new JMenuItem("退出");
+	//JPopupMenu
+	JPopupMenu jpm = new JPopupMenu();
 	//JLabel
 	private JLabel jl;
 	private JLabel jltime = new JLabel();
@@ -83,6 +93,8 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private JTextField jtfNoPwdAnswer = new JTextField();
 	private JTextField jtfReaderMessageName = new JTextField();
 	private JTextField jtfReaderMessageIDcard = new JTextField();
+	private JTextField jtfManagerLib = new JTextField();
+	private JTextField jtfManagerReturn = new JTextField();
 	//JPasswordField
 	private JPasswordField jpfLoginPwd = new JPasswordField();
 	private JPasswordField jpfRegisterPwd1 = new JPasswordField();
@@ -91,6 +103,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private JTable jtRootBook;
 	private JTable jtReaderBook;
 	private JTable jtReaderHistory;
+	private JTable jtManagerLib;
 	//JPanel
 	private JPanel main = new JPanel();
 	private JPanel Login = new JPanel();
@@ -100,6 +113,9 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		private JPanel RootReader = new JPanel();
 		private JPanel RootManager = new JPanel();
 		private JPanel RootBook = new JPanel();
+	private JPanel Manager = new JPanel();
+		private JPanel ManagerLib  = new JPanel();
+		private JPanel ManagerReturn = new JPanel();
 	private JPanel Reader = new JPanel();
 		private JPanel ReaderLib = new JPanel();
 		private JPanel ReaderMessage = new JPanel();
@@ -135,6 +151,12 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private JButton bRootManagerSelect = new JButton("管理员记录查询");
 	private JButton bRootManagerDelect = new JButton("管理员记录删除");
 	private JButton bRootManagerUpdate = new JButton("管理员记录修改");
+	private JButton bManagerLib = new JButton("图书借阅");
+	private JButton bManagerReturn = new JButton("图书归还");
+	private JButton bManagerLibUpdate = new JButton("提交");
+	private JButton bManagerLibY = new JButton("确认");
+	private JButton bManagerReturnUpdate = new JButton("提交");
+	private JButton bManagerReturnY = new JButton("确认");
 	private JButton bReaderLib = new JButton("书籍借阅");
 	private JButton bReaderMessage = new JButton("用户信息完善");
 	private JButton bReaderHistory = new JButton("历史纪录浏览");
@@ -144,9 +166,6 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private JButton bReaderLibLib = new JButton("借阅选中的书籍");
 	private JButton bReaderMessageUpdate = new JButton("提交");
 	private TimerTask tt = new TimerTask() {
-		
-		
-		
 		@Override
 		public void run() {
 			java.util.Date date1 = new java.util.Date();
@@ -164,18 +183,31 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
 		
+		join_JPopupMenu();
 		join_main();
 		join_Login();
 		join_Register();
 		join_NoPwd();
 		join_root();
 		join_reader();
+		join_manager();
 		
 		
 		timer.schedule(tt, 0, 1000);
 		jltime.setBounds(0, 0, 200, 30);
 		getContentPane().add(jltime);
 		this.setVisible(true);
+	}
+	//右键菜单
+	private void join_JPopupMenu(){
+//		jmi1.addActionListener(this);
+//		jmi2.addActionListener(this);
+//		jmi3.addActionListener(this);
+//		jpm.add(jmi1);
+//		jpm.add(jmi2);
+//		jpm.add(jmi3);
+//		addMouseListener(this);
+//		add(jpm);
 	}
 	// 主界面
 	private void join_main(){
@@ -363,8 +395,26 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private void join_manager(){
 		int x = 10;
 		int y = 10;
-		int width = 200;
+		int width = 150;
 		int height = 30;
+		Manager.setLayout(null);
+		Manager.setBounds(panelX, panelY, panelW, panelH);
+		
+		Manager.add(addJLabel("通知栏：", x, y, width-50, height));
+		Message.setBounds(x+50, y, width+500, height);
+		Manager.add(Message);
+		bManagerLib.setBounds(x, y=y+30, width, height);
+		bManagerLib.addActionListener(this);
+		Manager.add(bManagerLib);
+		bManagerReturn.setBounds(x, y=y+30, width, height);
+		bManagerReturn.addActionListener(this);
+		Manager.add(bManagerReturn);
+		
+		join_Manager_lib();
+		join_Manager_return();
+		
+		Manager.setVisible(false);
+		add(Manager);
 	}
 	//reader界面
 	private void join_reader(){
@@ -509,28 +559,28 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		
 		ReaderLib.add(addJLabel("注意该系统只提供图书借阅预定，还需用户到图书馆自己提取", x, y, width+400, height, Color.red));
 		
-		tm = new DefaultTableModel(DataBook, columnNames);
-		tm.addTableModelListener(new TableModelListener() {
+		tm_readerLib = new DefaultTableModel(DataBook, columnNames);
+		tm_readerLib.addTableModelListener(new TableModelListener() {
 			
 			public void tableChanged(TableModelEvent e) {
 //				jtReaderBook = new mytable(tm);
 //				jtReaderBook.repaint(10, 10, 800, 400);
 //				jtReaderBook.updateUI();
 //				jtReaderBook.validate();
-				tm = new DefaultTableModel(DataBook, columnNames);
-				tm.addTableModelListener(this);
-				jtReaderBook.setModel(tm);
+				tm_readerLib = new DefaultTableModel(DataBook, columnNames);
+				tm_readerLib.addTableModelListener(this);
+				jtReaderBook.setModel(tm_readerLib);
 //				jtReaderBook.repaint();
 				jtReaderBook.updateUI();
 			}
 		});
-		jtReaderBook = new mytable(tm);
+		jtReaderBook = new mytable(tm_readerLib);
 		jtReaderBook.setBounds(x, y, 800, 400);
 		jtReaderBook.getTableHeader().setReorderingAllowed(false);
 		jtReaderBook.addMouseListener(this);
-		JSP1= new JScrollPane(jtReaderBook);
-		JSP1.setBounds(x, y=y+30, 800, 400);
-		ReaderLib.add(JSP1);
+		JScrollPane JSP= new JScrollPane(jtReaderBook);
+		JSP.setBounds(x, y=y+30, 800, 400);
+		ReaderLib.add(JSP);
 		bReaderLibSelectName.setBounds(x=x+800, y, width, height);
 		bReaderLibSelectKinds.setBounds(x, y=y+30, width, height);
 		bReaderLibAll.setBounds(x, y=y+30, width, height);
@@ -586,6 +636,46 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		Reader.add(ReaderMessage);
 	}
 	//图书借阅管理员确定界面
+	private void join_Manager_lib(){
+		int x = 10;
+		int y = 10;
+		int width = 150;
+		int height = 30;
+		ManagerLib.setLayout(null);
+		ManagerLib.setBounds(panelX+150, panelY+30, panelW-200, panelH-100);
+		
+		ManagerLib.add(addJLabel("用户名:", x, y, width, height));
+		jtfManagerLib.setBounds(x=x+50, y, width, height);
+		jtfManagerLib.setText("输入读者账号");
+		jtfManagerLib.addFocusListener(this);
+		ManagerLib.add(jtfManagerLib);
+		bManagerLibUpdate.setBounds(x+150, y, width, height);
+		bManagerLibUpdate.addActionListener(this);
+		ManagerLib.add(bManagerLibUpdate);
+		
+		
+		ManagerLib.setVisible(false);
+		Manager.add(ManagerLib);
+	}
+	//图书归还管理员确认界面
+	private void join_Manager_return(){
+		int x = 10;
+		int y = 10;
+		int width = 150;
+		int height = 30;
+		ManagerReturn.setLayout(null);
+		ManagerReturn.setBounds(panelX+150, panelY+30, panelW-200, panelH-100);
+		
+		ManagerReturn.add(addJLabel("用户名:", x, y, width, height));
+		jtfManagerReturn.setBounds(x=x+50, y, width, height);
+		ManagerReturn.add(jtfManagerReturn);
+		bManagerReturnUpdate.setBounds(x, y=y+30, width, height);
+		bManagerReturnUpdate.addActionListener(this);
+		ManagerReturn.add(bManagerReturnUpdate);
+		
+		ManagerReturn.setVisible(false);
+		Manager.add(ManagerReturn);
+	}
 	//root图书管理
 		//图书记录增加
 	private void join_root_book_create(){
@@ -598,7 +688,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		Object a =  e.getSource();
 		if (a.equals(bTest)) {
 			main.setVisible(false);
-			Reader.setVisible(true);
+			Manager.setVisible(true);
 		}else if(a.equals(bRegister)){
 			main.setVisible(false);
 			Register.setVisible(true);
@@ -791,7 +881,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			addBookTable(input);
 			for (int i = 0; i < DataBook.size(); i++) {
 				for (int j = 0; j < DataBook.get(i).size(); j++) {
-					tm.setValueAt(DataBook.get(i).get(j), i, j);
+					tm_readerLib.setValueAt(DataBook.get(i).get(j), i, j);
 				}
 			}
 		}else if (a.equals(bReaderLibSelectKinds)) {
@@ -800,7 +890,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			addBookTable();
 			for (int i = 0; i < DataBook.size(); i++) {
 				for (int j = 0; j < DataBook.get(i).size(); j++) {
-					tm.setValueAt(DataBook.get(i).get(j), i, j);
+					tm_readerLib.setValueAt(DataBook.get(i).get(j), i, j);
 				}
 			}
 		}else if (a.equals(bReaderMessageUpdate)) {
@@ -819,46 +909,112 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			}
 			user.setName(uname);
 			user.setIDcard(IDcard);
+		}else if (a.equals(bManagerLib)) {
+			ManagerLib.setVisible(true);
+			ManagerReturn.setVisible(false);
+		}else if (a.equals(bManagerReturn)) {
+			ManagerLib.setVisible(false);
+			ManagerReturn.setVisible(true);
+		}else if (a.equals(bManagerLibUpdate)) {
+			addManagerLibBook(jtfManagerLib.getText());
+			if (HList==null) {
+				JOptionPane.showMessageDialog(this, "用户不存在");
+			}else {
+				TableModel tm = new DefaultTableModel(DataManagerLib, HcolumnNames);
+				jtManagerLib = new mytable(tm);
+				jtManagerLib.setBounds(0, 0, 800, 400);
+				jtManagerLib.getTableHeader().setReorderingAllowed(false);
+				jtManagerLib.addMouseListener(this);
+				JScrollPane JSP = new JScrollPane(jtManagerLib);
+				JSP.setBounds(50, 50, 800, 400);
+				ManagerLib.add(JSP);
+				bManagerLibY.setBounds(850, 300, 100, 30);
+				bManagerLibY.addActionListener(this);
+				ManagerLib.add(bManagerLibY);
+				Manager.repaint();
+				
+			}
+			HList=null;
+		}else if (a.equals(bManagerLibY)) {
+			int[] row = jtManagerLib.getSelectedRows();
+			int answer = -1;
+			for (int i = 0; i < row.length; i++) {
+				//TODO 可以考虑增加识别出是哪本书出错
+				answer = su.double_bManagerLib(DataManagerLib, row[i]);
+				switch (answer) {
+				case 1:
+					JOptionPane.showMessageDialog(this, "纪录成功");
+					break;
+				default:
+					JOptionPane.showMessageDialog(this, "纪录失败");
+					break;
+				}
+			}
 		}
 	}
-
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		if (e.getSource().equals(jtReaderBook)) {
-			int row = jtReaderBook.getSelectedRow();
-			System.out.println(row);
+		Object a = e.getSource();
+		if (e.getClickCount()==1) {			
+			if (e.getSource().equals(jtReaderBook)) {
+				int row = jtReaderBook.getSelectedRow();
+			}else if (e.getButton() == MouseEvent.BUTTON3) {
+				if (!this.getContentPane().equals(main)) 
+					jpm.show(this, e.getX(), e.getY());
+			}else if (a.equals(jtManagerLib)) {
+				
+			}
+		}else if (e.getClickCount()==2) {
+			if (a.equals(jtManagerLib)) {
+				int row = jtManagerLib.getSelectedRow();
+				int answer = JOptionPane.showConfirmDialog(this, "你确定要将《"+DataManagerLib.get(row).get(2)+"》借出")	;
+				if (answer == 0) {
+					answer = su.double_bManagerLib(DataManagerLib, row);
+					//TODO 返回错误原因
+					switch (answer) {
+					case 0:
+						JOptionPane.showMessageDialog(this, "纪录成功");
+						break;
+					case 1:
+						break;
+					case 2:
+						break;
+					default:
+						JOptionPane.showMessageDialog(this, "纪录失败");
+						break;
+					}
+				}
+			}
 		}
 	}
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 	public void focusGained(FocusEvent e) {
-		
+		Object a = e.getSource();
+		if (a.equals(jtfManagerLib)) {
+			if (jtfManagerLib.getText().equals("输入读者账号")) {
+				jtfManagerLib.setText("");
+			}
+		}
 		
 	}
 	public void focusLost(FocusEvent e) {
@@ -923,6 +1079,10 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 				error[4]="";
 				judgment7.setText("验证答案不能为空");
 				error[4]="验证答案不能为空";
+			}
+		}else if (a.equals(jtfManagerLib)) {
+			if (jtfManagerLib.getText().equals("")) {
+				jtfManagerLib.setText("输入读者账号");
 			}
 		}
 	}
@@ -1025,7 +1185,45 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		}
 		HcolumnNames = new Vector<String>();
 		HcolumnNames.add("历史编号");
-		HcolumnNames.add( "书籍编号");
+		HcolumnNames.add("书籍编号");
+		HcolumnNames.add("书籍名称");
+		HcolumnNames.add("读者编号");
+		HcolumnNames.add("读者用户名");
+		HcolumnNames.add("借阅时间");
+		HcolumnNames.add("归还时间");
+	}
+	private void addManagerLibBook(String name){
+		DataManagerLib = new Vector<Vector<Object>>();
+		entity.Reader reader = new entity.Reader();
+		reader.setAccounts(name);
+		HList = factory.getManagerActionImpl().ManagerLibHistory(name);
+		System.out.println(123);
+//		System.out.println(((bookLibHistory)HList.get(0)).getBook().getName());
+		Vector<Object> h = null;
+		int n = 0;
+		bookLibHistory H;
+//		 blh.bookLibHistoryNo,b.bid,b.name,r.rid,r.accounts,blh.hdate,blh.libDate
+		if (HList==null) {
+			return;
+		}
+		while (n<HList.size()) {
+			H = (bookLibHistory)HList.get(n);
+			if (H.getLibDate().equals("")) {
+				h = new Vector<Object>();
+				h.add(H.getBookLibHistory());
+				h.add(H.getBook().getBid());
+				h.add(H.getBook().getName());
+				h.add(H.getReader().getRid());
+				h.add(H.getReader().getAccounts());
+				h.add(H.getHdate());
+				h.add(H.getLibDate());
+				DataManagerLib.add(h);
+			}
+			n++;
+		}
+		HcolumnNames = new Vector<String>();
+		HcolumnNames.add("历史编号");
+		HcolumnNames.add("书籍编号");
 		HcolumnNames.add("书籍名称");
 		HcolumnNames.add("读者编号");
 		HcolumnNames.add("读者用户名");
@@ -1033,3 +1231,4 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		HcolumnNames.add("归还时间");
 	}
 }
+

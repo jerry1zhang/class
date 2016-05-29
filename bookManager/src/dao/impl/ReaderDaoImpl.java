@@ -102,6 +102,7 @@ public class ReaderDaoImpl implements ReaderDao {
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				reader.setRid(rs.getInt("rid"));
+				reader.setAccounts(rs.getString("accounts"));
 				reader.setPwd(rs.getString("pwd"));
 				reader.setName(rs.getString("name"));
 				reader.setIDcard(rs.getString("IDcard"));

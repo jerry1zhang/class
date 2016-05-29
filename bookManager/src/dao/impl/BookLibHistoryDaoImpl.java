@@ -16,7 +16,7 @@ import util.DBhelper_mysql;
 
 public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 	private factory f = new factory();
-	public boolean createbookLibHistory(bookLibHistory bookLibHistory,Reader reader) {
+	public boolean createBookLibHistory(bookLibHistory bookLibHistory,Reader reader) {
 		DBhelper_mysql dbh = f.getDBhelper_mysql();
 		Connection conn = dbh.getConnection();
 		PreparedStatement ps = null;
@@ -40,7 +40,7 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		return flag;
 	}
 
-	public boolean delectbookLibHistory(bookLibHistory bookLibHistory) {
+	public boolean delectBookLibHistory(bookLibHistory bookLibHistory) {
 		// TODO Auto-generated method stub
 		DBhelper_mysql dbh = f.getDBhelper_mysql();
 		Connection conn = dbh.getConnection();
@@ -62,7 +62,7 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		return flag;
 	}
 
-	public boolean updatebookLibHistory(bookLibHistory bookLibHistory) {
+	public boolean updateBookLibHistory(bookLibHistory bookLibHistory) {
 		boolean flag = false;
 		DBhelper_mysql dbh = f.getDBhelper_mysql();
 		Connection conn = dbh.getConnection();
@@ -88,7 +88,7 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		return flag;
 	}
 
-	public bookLibHistory selectbookLibHistory(bookLibHistory bookLibHistory) {
+	public bookLibHistory selectBookLibHistory(bookLibHistory bookLibHistory) {
 		DBhelper_mysql dbh = f.getDBhelper_mysql();
 		Connection conn = dbh.getConnection();
 		PreparedStatement ps = null;
@@ -155,17 +155,17 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		return srbh;
 	}
 
-	public boolean updatebookLibHistory(int bookLibHistoryNo, Date LibDate) {
+	public boolean updateBookLibHistory(int bno, Date LibDate) {
 		boolean flag = false;
 		DBhelper_mysql dbh = f.getDBhelper_mysql();
 		Connection conn = dbh.getConnection();
 		PreparedStatement ps = null;
 		int n = 0;
-		String sql = "update bookLibHistory set libDate = ? where bookLibHistory = ?";
+		String sql = "update bookLibHistory set libDate = ? where bno = ?";
 		try {
 			ps = conn.prepareStatement(sql);
-			ps.setInt(1, bookLibHistoryNo);
-			ps.setDate(2, LibDate);
+			ps.setDate(1, LibDate);
+			ps.setInt(2, bno);
 			n = ps.executeUpdate();
 			if (n!=0) {
 				flag = true;
@@ -176,6 +176,8 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		dbh.closeConnection(null, ps, conn);
 		return flag;
 	}
+
+
 	
 
 }
