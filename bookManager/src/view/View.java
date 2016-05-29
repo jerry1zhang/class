@@ -51,6 +51,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	Vector<Vector<Object>> DataBook;
 	Vector<Vector<Object>> DataHistory;
 	Vector<Vector<Object>> DataManagerLib;
+	Vector<Vector<Object>> DataManagerReturn;
 	ArrayList<Object> bList;
 	ArrayList<Object> HList;
 	Vector<String> columnNames;
@@ -104,6 +105,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private JTable jtReaderBook;
 	private JTable jtReaderHistory;
 	private JTable jtManagerLib;
+	private JTable jtManagerReturn;
 	//JPanel
 	private JPanel main = new JPanel();
 	private JPanel Login = new JPanel();
@@ -668,8 +670,10 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		
 		ManagerReturn.add(addJLabel("用户名:", x, y, width, height));
 		jtfManagerReturn.setBounds(x=x+50, y, width, height);
+		jtfManagerReturn.setText("输入读者账号");
+		jtfManagerReturn.addFocusListener(this);
 		ManagerReturn.add(jtfManagerReturn);
-		bManagerReturnUpdate.setBounds(x, y=y+30, width, height);
+		bManagerReturnUpdate.setBounds(x+150, y, width, height);
 		bManagerReturnUpdate.addActionListener(this);
 		ManagerReturn.add(bManagerReturnUpdate);
 		
@@ -950,6 +954,41 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 					break;
 				}
 			}
+		}else if (a.equals(bManagerReturnUpdate)) {
+			addManagerReturnBook(jtfManagerReturn.getText());
+			if (HList==null) {
+				JOptionPane.showMessageDialog(this, "用户不存在");
+			}else {
+				TableModel tm = new DefaultTableModel(DataManagerReturn, HcolumnNames);
+				jtManagerReturn = new mytable(tm);
+				jtManagerReturn.setBounds(0, 0, 800, 400);
+				jtManagerReturn.getTableHeader().setReorderingAllowed(false);
+				jtManagerReturn.addMouseListener(this);
+				JScrollPane JSP = new JScrollPane(jtManagerReturn);
+				JSP.setBounds(50, 50, 800, 400);
+				ManagerReturn.add(JSP);
+				bManagerReturnY.setBounds(850, 300, 100, 30);
+				bManagerReturnY.addActionListener(this);
+				ManagerReturn.add(bManagerReturnY);
+				Manager.repaint();
+				
+			}
+			HList=null;
+		}else if (a.equals(bManagerReturnY)) {
+			int[] row = jtManagerReturn.getSelectedRows();
+			int answer = -1;
+			for (int i = 0; i < row.length; i++) {
+				//TODO 可以考虑增加识别出是哪本书出错
+				answer = su.double_bManagerReturn(DataManagerReturn, row[i]);
+				switch (answer) {
+				case 1:
+					JOptionPane.showMessageDialog(this, "纪录成功");
+					break;
+				default:
+					JOptionPane.showMessageDialog(this, "纪录失败");
+					break;
+				}
+			}
 		}
 	}
 	public void mouseClicked(MouseEvent e) {
@@ -967,6 +1006,25 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		}else if (e.getClickCount()==2) {
 			if (a.equals(jtManagerLib)) {
 				int row = jtManagerLib.getSelectedRow();
+				int answer = JOptionPane.showConfirmDialog(this, "你确定要将《"+DataManagerLib.get(row).get(2)+"》借出")	;
+				if (answer == 0) {
+					answer = su.double_bManagerLib(DataManagerLib, row);
+					//TODO 返回错误原因
+					switch (answer) {
+					case 0:
+						JOptionPane.showMessageDialog(this, "纪录成功");
+						break;
+					case 1:
+						break;
+					case 2:
+						break;
+					default:
+						JOptionPane.showMessageDialog(this, "纪录失败");
+						break;
+					}
+				}
+			}else if (a.equals(jtManagerReturn)) {
+				int row = jtManagerReturn.getSelectedRow();
 				int answer = JOptionPane.showConfirmDialog(this, "你确定要将《"+DataManagerLib.get(row).get(2)+"》借出")	;
 				if (answer == 0) {
 					answer = su.double_bManagerLib(DataManagerLib, row);
@@ -1013,6 +1071,10 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		if (a.equals(jtfManagerLib)) {
 			if (jtfManagerLib.getText().equals("输入读者账号")) {
 				jtfManagerLib.setText("");
+			}
+		}else if (a.equals(jtfManagerReturn)) {
+			if (jtfManagerReturn.getText().equals("输入读者账号")) {
+				jtfManagerReturn.setText("");
 			}
 		}
 		
@@ -1083,6 +1145,10 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		}else if (a.equals(jtfManagerLib)) {
 			if (jtfManagerLib.getText().equals("")) {
 				jtfManagerLib.setText("输入读者账号");
+			}
+		}else if (a.equals(jtfManagerReturn)) {
+			if (jtfManagerReturn.getText().equals("")) {
+				jtfManagerReturn.setText("输入读者账号");
 			}
 		}
 	}
@@ -1197,12 +1263,9 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		entity.Reader reader = new entity.Reader();
 		reader.setAccounts(name);
 		HList = factory.getManagerActionImpl().ManagerLibHistory(name);
-		System.out.println(123);
-//		System.out.println(((bookLibHistory)HList.get(0)).getBook().getName());
 		Vector<Object> h = null;
 		int n = 0;
 		bookLibHistory H;
-//		 blh.bookLibHistoryNo,b.bid,b.name,r.rid,r.accounts,blh.hdate,blh.libDate
 		if (HList==null) {
 			return;
 		}
@@ -1218,6 +1281,41 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 				h.add(H.getHdate());
 				h.add(H.getLibDate());
 				DataManagerLib.add(h);
+			}
+			n++;
+		}
+		HcolumnNames = new Vector<String>();
+		HcolumnNames.add("历史编号");
+		HcolumnNames.add("书籍编号");
+		HcolumnNames.add("书籍名称");
+		HcolumnNames.add("读者编号");
+		HcolumnNames.add("读者用户名");
+		HcolumnNames.add("借阅时间");
+		HcolumnNames.add("归还时间");
+	}
+	private void addManagerReturnBook(String name){
+		DataManagerReturn = new Vector<Vector<Object>>();
+		entity.Reader reader = new entity.Reader();
+		reader.setAccounts(name);
+		HList = factory.getManagerActionImpl().ManagerLibHistory(name);
+		Vector<Object> h = null;
+		int n = 0;
+		bookLibHistory H;
+		if (HList==null) {
+			return;
+		}
+		while (n<HList.size()) {
+			H = (bookLibHistory)HList.get(n);
+			if (!H.getLibDate().equals("")) {
+				h = new Vector<Object>();
+				h.add(H.getBookLibHistory());
+				h.add(H.getBook().getBid());
+				h.add(H.getBook().getName());
+				h.add(H.getReader().getRid());
+				h.add(H.getReader().getAccounts());
+				h.add(H.getHdate());
+				h.add(H.getLibDate());
+				DataManagerReturn.add(h);
 			}
 			n++;
 		}

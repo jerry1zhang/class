@@ -8,7 +8,14 @@ public class bookLibHistory {
 	private Reader reader;
 	private Date hdate;
 	private Date LibDate;
+	private int status;//该记录是否有效 0=T 1=F
 	
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
 	public Date getHdate() {
 		return hdate;
 	}

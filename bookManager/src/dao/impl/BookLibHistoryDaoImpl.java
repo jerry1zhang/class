@@ -155,13 +155,35 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		return srbh;
 	}
 
-	public boolean updateBookLibHistory(int bno, Date LibDate) {
+	public boolean updateBookLibHistory(int bno, Date hDate) {
 		boolean flag = false;
 		DBhelper_mysql dbh = f.getDBhelper_mysql();
 		Connection conn = dbh.getConnection();
 		PreparedStatement ps = null;
 		int n = 0;
-		String sql = "update bookLibHistory set libDate = ? where bno = ?";
+		String sql = "update bookLibHistory set hDate = ? where bno = ?";
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setDate(1, hDate);
+			ps.setInt(2, bno);
+			n = ps.executeUpdate();
+			if (n!=0) {
+				flag = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		dbh.closeConnection(null, ps, conn);
+		return flag;
+	}
+
+	public boolean updateBookReturnHistory(int bno, Date LibDate) {
+		boolean flag = false;
+		DBhelper_mysql dbh = f.getDBhelper_mysql();
+		Connection conn = dbh.getConnection();
+		PreparedStatement ps = null;
+		int n = 0;
+		String sql = "update bookLibHistory set LibDate = ? where bno = ?";
 		try {
 			ps = conn.prepareStatement(sql);
 			ps.setDate(1, LibDate);
