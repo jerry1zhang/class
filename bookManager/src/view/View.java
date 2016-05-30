@@ -646,7 +646,8 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		ManagerLib.setLayout(null);
 		ManagerLib.setBounds(panelX+150, panelY+30, panelW-200, panelH-100);
 		
-		ManagerLib.add(addJLabel("用户名:", x, y, width, height));
+		ManagerLib.add(addJLabel("   图书借阅", x, y, width, height,Color.red));
+		ManagerLib.add(addJLabel("用户名:", x=x+150, y, width, height));
 		jtfManagerLib.setBounds(x=x+50, y, width, height);
 		jtfManagerLib.setText("输入读者账号");
 		jtfManagerLib.addFocusListener(this);
@@ -668,7 +669,8 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		ManagerReturn.setLayout(null);
 		ManagerReturn.setBounds(panelX+150, panelY+30, panelW-200, panelH-100);
 		
-		ManagerReturn.add(addJLabel("用户名:", x, y, width, height));
+		ManagerReturn.add(addJLabel("   图书归还", x, y, width, height,Color.red));
+		ManagerReturn.add(addJLabel("用户名:", x=x+150, y, width, height));
 		jtfManagerReturn.setBounds(x=x+50, y, width, height);
 		jtfManagerReturn.setText("输入读者账号");
 		jtfManagerReturn.addFocusListener(this);
