@@ -22,7 +22,6 @@ public class ReaderDaoImpl implements ReaderDao {
 		try {
 			String sql = "insert into reader(accounts,pwd,question,answer,LastLoginTime) values(?,?,?,?,?)";
 			ps = conn.prepareStatement(sql);
-			System.out.println(reader.getAccounts());
 			ps.setString(1, reader.getAccounts());
 			ps.setString(2, reader.getPwd());
 			ps.setString(3, reader.getQuestion());

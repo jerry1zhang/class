@@ -14,7 +14,6 @@ public class ReaderActionImpl implements ReaderAction {
 		reader.setAccounts(accounts);
 		reader.setPwd(pwd);
 		int n = f.getReaderBizImpl().Login(reader);
-		System.out.println(n);
 		if (n==-1) {
 			n = f.getManagerActionImpl().Login(accounts, pwd);
 		}

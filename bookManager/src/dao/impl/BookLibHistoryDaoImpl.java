@@ -23,12 +23,12 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		boolean flag = false;
 		int n = 0;
 		try {
-			String sql = "insert into bookLibHistory(bid,rid,hdate,libDate) value(?,?,?,?)";
+			String sql = "insert into bookLibHistory(bid,rid,LibDate,ReturnDate) value(?,?,?,?)";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, bookLibHistory.getBook().getBid());
 			ps.setInt(2, reader.getRid());
-			ps.setDate(3, bookLibHistory.getHdate());
-			ps.setDate(4, bookLibHistory.getLibDate());
+			ps.setDate(3, bookLibHistory.getLibDate());
+			ps.setDate(4, bookLibHistory.getReturnDate());
 			n = ps.executeUpdate();
 			if (n!=0) {
 				flag = true;
@@ -47,7 +47,7 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		PreparedStatement ps = null;
 		int n = 0;
 		boolean flag = false;
-		String sql = "delect bookLibHistoryNo,bid,rid,hdate,libDate from bookLibHistory where bookLibHistory = ?";
+		String sql = "delect bookLibHistoryNo,bid,rid,LibDate,ReturnDate from bookLibHistory where bookLibHistory = ?";
 		try {
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, bookLibHistory.getBookLibHistory());
@@ -68,14 +68,14 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		Connection conn = dbh.getConnection();
 		PreparedStatement ps = null;
 		int n = 0;
-		String sql = "update bookLibHistory set bookLibHistory = ?,bid = ?,rid = ?,hdate = ?,libDate = ? where bookLibHistory = ?";
+		String sql = "update bookLibHistory set bookLibHistory = ?,bid = ?,rid = ?,LibDate = ?,ReturnDate = ? where bookLibHistory = ?";
 		try {
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, bookLibHistory.getBookLibHistory());
 			ps.setInt(2, bookLibHistory.getBook().getBid());
 			ps.setInt(3, bookLibHistory.getReader().getRid());
-			ps.setDate(4, bookLibHistory.getHdate());
-			ps.setDate(5, bookLibHistory.getLibDate());
+			ps.setDate(4, bookLibHistory.getLibDate());
+			ps.setDate(5, bookLibHistory.getReturnDate());
 			ps.setInt(6, bookLibHistory.getBookLibHistory());
 			n = ps.executeUpdate();
 			if (n!=0) {
@@ -94,7 +94,7 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			String sql = "select bookLibHistoryNo,bid,rid,hdate,libDate from bookLibHistory where rid = ?";
+			String sql = "select bookLibHistoryNo,bid,rid,LibDate,ReturnDate from bookLibHistory where rid = ?";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, bookLibHistory.getReader().getRid());
 			rs = ps.executeQuery();
@@ -107,7 +107,8 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 				Reader reader = new Reader();
 				reader.setRid(rs.getInt("rid"));
 				bookLibHistory.setReader(reader);
-				bookLibHistory.setHdate(rs.getDate("hdate"));
+				bookLibHistory.setLibDate(rs.getDate("LibDate"));
+				bookLibHistory.setReturnDate(rs.getDate("ReturnDate"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -128,7 +129,7 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		ResultSet rs = null;
 		ArrayList<Object> srbh = new ArrayList<Object>();
 		try {
-			String sql = "select blh.bookLibHistoryNo,b.bid,b.name,r.rid,r.accounts,blh.hdate,blh.libDate from bookLibHistory blh,book b,reader r where r.rid = ? and blh.bno = b.bid and blh.rid = r.rid";
+			String sql = "select blh.bookLibHistoryNo,b.bid,b.name,r.rid,r.accounts,blh.LibDate,blh.ReturnDate,blh.status from bookLibHistory blh,book b,reader r where r.rid = ? and blh.bno = b.bid and blh.rid = r.rid";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, reader.getRid());
 			rs = ps.executeQuery();
@@ -144,8 +145,9 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 				r.setRid(rs.getInt("rid"));
 				r.setAccounts(rs.getString("accounts"));
 				bookLibHistory.setReader(r);
-				bookLibHistory.setHdate(rs.getDate("hdate"));
-				bookLibHistory.setLibDate(rs.getDate("libDate"));
+				bookLibHistory.setLibDate(rs.getDate("LibDate"));
+				bookLibHistory.setReturnDate(rs.getDate("ReturnDate"));
+				bookLibHistory.setStatus(rs.getInt("status"));
 				srbh.add(bookLibHistory);
 			}
 		} catch (SQLException e) {
@@ -155,16 +157,16 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		return srbh;
 	}
 
-	public boolean updateBookLibHistory(int bno, Date hDate) {
+	public boolean updateBookLibHistory(int bno, Date ReturnDate) {
 		boolean flag = false;
 		DBhelper_mysql dbh = f.getDBhelper_mysql();
 		Connection conn = dbh.getConnection();
 		PreparedStatement ps = null;
 		int n = 0;
-		String sql = "update bookLibHistory set hDate = ? where bno = ?";
+		String sql = "update bookLibHistory set ReturnDate = ? where bno = ?";
 		try {
 			ps = conn.prepareStatement(sql);
-			ps.setDate(1, hDate);
+			ps.setDate(1, ReturnDate);
 			ps.setInt(2, bno);
 			n = ps.executeUpdate();
 			if (n!=0) {
@@ -177,16 +179,16 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		return flag;
 	}
 
-	public boolean updateBookReturnHistory(int bno, Date LibDate) {
+	public boolean updateBookReturnHistory(int bno, Date ReturnDate) {
 		boolean flag = false;
 		DBhelper_mysql dbh = f.getDBhelper_mysql();
 		Connection conn = dbh.getConnection();
 		PreparedStatement ps = null;
 		int n = 0;
-		String sql = "update bookLibHistory set LibDate = ? where bno = ?";
+		String sql = "update bookLibHistory set ReturnDate = ?,status = 0 where bno = ?";
 		try {
 			ps = conn.prepareStatement(sql);
-			ps.setDate(1, LibDate);
+			ps.setDate(1, ReturnDate);
 			ps.setInt(2, bno);
 			n = ps.executeUpdate();
 			if (n!=0) {

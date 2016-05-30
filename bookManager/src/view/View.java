@@ -174,7 +174,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			Date date=new Date(date1.getTime());
 			DateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			time=format.format(date);
-			jltime.setText(time);
+			jltime.setText("北京时间："+time);
 		}
 	};
 	private Timer timer = new Timer();
@@ -202,14 +202,14 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	}
 	//右键菜单
 	private void join_JPopupMenu(){
-//		jmi1.addActionListener(this);
-//		jmi2.addActionListener(this);
-//		jmi3.addActionListener(this);
-//		jpm.add(jmi1);
-//		jpm.add(jmi2);
-//		jpm.add(jmi3);
-//		addMouseListener(this);
-//		add(jpm);
+		jmi1.addActionListener(this);
+		jmi2.addActionListener(this);
+		jmi3.addActionListener(this);
+		jpm.add(jmi1);
+		jpm.add(jmi2);
+		jpm.add(jmi3);
+		addMouseListener(this);
+		add(jpm);
 	}
 	// 主界面
 	private void join_main(){
@@ -1025,9 +1025,9 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 				}
 			}else if (a.equals(jtManagerReturn)) {
 				int row = jtManagerReturn.getSelectedRow();
-				int answer = JOptionPane.showConfirmDialog(this, "你确定要将《"+DataManagerLib.get(row).get(2)+"》借出")	;
+				int answer = JOptionPane.showConfirmDialog(this, "你是否确定《"+DataManagerReturn.get(row).get(2)+"》已归还")	;
 				if (answer == 0) {
-					answer = su.double_bManagerLib(DataManagerLib, row);
+					answer = su.double_bManagerReturn(DataManagerReturn, row);
 					//TODO 返回错误原因
 					switch (answer) {
 					case 0:
@@ -1088,6 +1088,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 				if (!m.find()) {
 					error[0] = "";
 					judgment3.setText("√");
+					judgment3.setForeground(Color.green);
 				}else {
 					error[0] = "";
 					judgment3.setText("账号不能为中文");
@@ -1104,9 +1105,11 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			if (!String.valueOf(jpfRegisterPwd1.getPassword()).equals("")) {
 				error[1] = "";
 				judgment4.setText("√");
+				judgment4.setForeground(Color.green);
 			}else {
 				error[1] = "";
 				judgment4.setText("密码不能为空");
+				judgment4.setForeground(Color.red);
 				error[1] = "密码不能为空";
 			}
 		}else if (a.equals(jpfRegisterPwd2)) {
@@ -1114,32 +1117,39 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 				if (String.valueOf(jpfRegisterPwd1.getPassword()).equals(String.valueOf(jpfRegisterPwd2.getPassword()))) {
 					error[2]="";
 					judgment5.setText("√");
+					judgment5.setForeground(Color.green);
 				}else {
 					error[2]="";
 					judgment5.setText("密码与验证密码不一致");
+					judgment5.setForeground(Color.red);
 					error[2]="密码与验证密码不一致";
 				}
 			}else {
 				error[2]="";
 				judgment5.setText("验证密码不能为空");
+				judgment5.setForeground(Color.red);
 				error[2]="验证密码不能为空";
 			}
 		}else if (a.equals(jtfRegisterQuestion)) {
 			if (!jtfRegisterQuestion.getText().toString().equals("")) {
 				error[3]="";
 				judgment6.setText("√");
+				judgment6.setForeground(Color.green);
 			}else {
 				error[3]="";
 				judgment6.setText("验证问题不能为空");
+				judgment6.setForeground(Color.red);
 				error[3]="验证问题不能为空";
 			}
 		}else if (a.equals(jtfRegisterAnswer)) {
 			if (!jtfRegisterAnswer.getText().toString().equals("")) {
 				error[4]="";
 				judgment7.setText("√");
+				judgment7.setForeground(Color.green);
 			}else {
 				error[4]="";
 				judgment7.setText("验证答案不能为空");
+				judgment7.setForeground(Color.red);
 				error[4]="验证答案不能为空";
 			}
 		}else if (a.equals(jtfManagerLib)) {
@@ -1244,8 +1254,8 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			h.add(H.getBook().getName());
 			h.add(H.getReader().getRid());
 			h.add(H.getReader().getAccounts());
-			h.add(H.getHdate());
 			h.add(H.getLibDate());
+			h.add(H.getReturnDate());
 			DataHistory.add(h);
 			n++;
 		}
@@ -1271,15 +1281,15 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		}
 		while (n<HList.size()) {
 			H = (bookLibHistory)HList.get(n);
-			if (H.getLibDate().equals("")) {
+			if (H.getStatus()==1) {
 				h = new Vector<Object>();
 				h.add(H.getBookLibHistory());
 				h.add(H.getBook().getBid());
 				h.add(H.getBook().getName());
 				h.add(H.getReader().getRid());
 				h.add(H.getReader().getAccounts());
-				h.add(H.getHdate());
 				h.add(H.getLibDate());
+				h.add(H.getReturnDate());
 				DataManagerLib.add(h);
 			}
 			n++;
@@ -1306,15 +1316,15 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		}
 		while (n<HList.size()) {
 			H = (bookLibHistory)HList.get(n);
-			if (!H.getLibDate().equals("")) {
+			if (H.getStatus()==1&&!H.getLibDate().equals(null)) {
 				h = new Vector<Object>();
 				h.add(H.getBookLibHistory());
 				h.add(H.getBook().getBid());
 				h.add(H.getBook().getName());
 				h.add(H.getReader().getRid());
 				h.add(H.getReader().getAccounts());
-				h.add(H.getHdate());
 				h.add(H.getLibDate());
+				h.add(H.getReturnDate());
 				DataManagerReturn.add(h);
 			}
 			n++;

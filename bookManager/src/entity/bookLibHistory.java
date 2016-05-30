@@ -6,8 +6,14 @@ public class bookLibHistory {
 	private int bookLibHistory;
 	private Book book;
 	private Reader reader;
-	private Date hdate;
 	private Date LibDate;
+	private Date ReturnDate;
+	public Date getReturnDate() {
+		return ReturnDate;
+	}
+	public void setReturnDate(Date returnDate) {
+		ReturnDate = returnDate;
+	}
 	private int status;//该记录是否有效 0=T 1=F
 	
 	public int getStatus() {
@@ -15,12 +21,6 @@ public class bookLibHistory {
 	}
 	public void setStatus(int status) {
 		this.status = status;
-	}
-	public Date getHdate() {
-		return hdate;
-	}
-	public void setHdate(Date hdate) {
-		this.hdate = hdate;
 	}
 	public Date getLibDate() {
 		return LibDate;
