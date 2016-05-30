@@ -2,6 +2,8 @@ package view;
 
 import java.util.Vector;
 
+import entity.Book;
+import entity.bookLibHistory;
 import factory.factory;
 
 public class serviceUI {
@@ -25,7 +27,10 @@ public class serviceUI {
 		if (Data==null) {
 			flag = noData;
 		}else {
-			if (f.getManagerActionImpl().ManagerReturnHistoryUpdate(Integer.valueOf(Data.get(row).get(1).toString()))) {
+			int bid = Integer.valueOf(Data.get(row).get(1).toString());
+			Book book = new Book();
+			book.setBid(bid);
+			if (f.getBookActionImpl().ReturnBookStatus(book)&&f.getManagerActionImpl().ManagerReturnHistoryUpdate(Integer.valueOf(Data.get(row).get(1).toString()))) {
 				flag = T;
 			}
 		}

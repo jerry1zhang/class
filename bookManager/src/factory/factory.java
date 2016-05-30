@@ -70,4 +70,10 @@ public class factory {
 		Book b = new Book();
 		return b;
 	}
+	public bookLibHistory getbookLibHistory(Book book,Reader reader){
+		bookLibHistory b = new bookLibHistory();
+		b.setBook(book);
+		b.setReader(reader);
+		return b;
+	}
 }

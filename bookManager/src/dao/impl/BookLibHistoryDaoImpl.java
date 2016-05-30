@@ -129,7 +129,7 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		ResultSet rs = null;
 		ArrayList<Object> srbh = new ArrayList<Object>();
 		try {
-			String sql = "select blh.bookLibHistoryNo,b.bid,b.name,r.rid,r.accounts,blh.LibDate,blh.ReturnDate,blh.status from bookLibHistory blh,book b,reader r where r.rid = ? and blh.bno = b.bid and blh.rid = r.rid";
+			String sql = "select blh.bookLibHistoryNo,b.bid,b.name,r.rid,r.accounts,blh.LibDate,blh.ReturnDate,blh.status from bookLibHistory blh,book b,reader r where r.rid = ? and blh.bid = b.bid and blh.rid = r.rid";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, reader.getRid());
 			rs = ps.executeQuery();
@@ -157,17 +157,17 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		return srbh;
 	}
 
-	public boolean updateBookLibHistory(int bno, Date ReturnDate) {
+	public boolean updateBookLibHistory(int bid, Date LibDate) {
 		boolean flag = false;
 		DBhelper_mysql dbh = f.getDBhelper_mysql();
 		Connection conn = dbh.getConnection();
 		PreparedStatement ps = null;
 		int n = 0;
-		String sql = "update bookLibHistory set ReturnDate = ? where bno = ?";
+		String sql = "update bookLibHistory set LibDate = ? where bid = ?";
 		try {
 			ps = conn.prepareStatement(sql);
-			ps.setDate(1, ReturnDate);
-			ps.setInt(2, bno);
+			ps.setDate(1, LibDate);
+			ps.setInt(2, bid);
 			n = ps.executeUpdate();
 			if (n!=0) {
 				flag = true;
@@ -179,17 +179,17 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		return flag;
 	}
 
-	public boolean updateBookReturnHistory(int bno, Date ReturnDate) {
+	public boolean updateBookReturnHistory(int bid, Date ReturnDate) {
 		boolean flag = false;
 		DBhelper_mysql dbh = f.getDBhelper_mysql();
 		Connection conn = dbh.getConnection();
 		PreparedStatement ps = null;
 		int n = 0;
-		String sql = "update bookLibHistory set ReturnDate = ?,status = 0 where bno = ?";
+		String sql = "update bookLibHistory set ReturnDate = ?,status = 0 where bid = ?";
 		try {
 			ps = conn.prepareStatement(sql);
 			ps.setDate(1, ReturnDate);
-			ps.setInt(2, bno);
+			ps.setInt(2, bid);
 			n = ps.executeUpdate();
 			if (n!=0) {
 				flag = true;

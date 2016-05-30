@@ -7,6 +7,7 @@ import entity.Reader;
 
 public interface BookBiz {
 	public ArrayList<Object> allBook();
-	public boolean LibBook(Object book);
+	public boolean LibBook(Object book,Reader reader);
 	public ArrayList<Object> readerHistory(Reader reader);
+	public boolean changeBookStatus(Book book);
 }

@@ -863,7 +863,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 				int answer = JOptionPane.showConfirmDialog(this, "您确定要借阅"+input+"吗？");
 				switch (answer) {
 				case 0:
-					if (factory.getBookActionImpl().LibBook(b2List)) {
+					if (factory.getBookActionImpl().LibBook(b2List,user)) {
 						JOptionPane.showMessageDialog(this, "恭喜你预定成功！");
 					}else {
 						JOptionPane.showMessageDialog(this, "预定失败，请稍后重试");
@@ -1316,7 +1316,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		}
 		while (n<HList.size()) {
 			H = (bookLibHistory)HList.get(n);
-			if (H.getStatus()==1&&!H.getLibDate().equals(null)) {
+			if (H.getStatus()==1) {
 				h = new Vector<Object>();
 				h.add(H.getBookLibHistory());
 				h.add(H.getBook().getBid());
