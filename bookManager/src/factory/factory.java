@@ -70,6 +70,7 @@ public class factory {
 	}
 	public Manager getManager(){
 		Manager m = new Manager();
+		m.setMid(0);
 		return m;
 	}
 	public Book getBook(){

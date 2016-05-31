@@ -16,7 +16,7 @@ public class ManagerBizImpl implements ManagerBiz {
 		m2 = f.getManager();
 		m2.setMpwd("");
 		m2 = f.getManagerDaoImpl().selectManager(manager.getMname());
-		if (m2!=null&&manager!=null) {
+		if (m2!=null&&manager!=null&&m2.getMid()!=0) {
 //			System.out.println(m2.getMpwd());
 //			System.out.println(manager.getMpwd());
 			if (m2.getMpwd().equals(manager.getMpwd())) {

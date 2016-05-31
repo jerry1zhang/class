@@ -46,6 +46,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 
 	private factory factory = new factory();
 	//全局变量
+	int power = 0;
 	serviceUI su = new serviceUI();
 	private String[] error = new String[5];
 	entity.Reader user = new entity.Reader();
@@ -276,8 +277,8 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		bLogin.addActionListener(this);
 		bNoPwd.setBounds(600, 400, 100, 30);
 		bNoPwd.addActionListener(this);
-		bTest.setBounds(700, 400, 100, 30);
-		bTest.addActionListener(this);
+//		bTest.setBounds(700, 400, 100, 30);
+//		bTest.addActionListener(this);
 		main.add(bTest);
 		main.add(bNoPwd);
 		main.add(bRegister);
@@ -512,19 +513,11 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 //		bRootBookSelect.addActionListener(this);
 //		RootBook.add(bRootBookSelect);
 		
-		addBookTable();
-		jtRootBook = new mytable(DataBook, columnNames);
-		jtRootBook.setBounds(x, y, 800, 400);
-		jtRootBook.getTableHeader().setReorderingAllowed(false);
-		jtRootBook.getTableHeader().setResizingAllowed(false);
-		jtRootBook.addMouseListener(this);
-		JScrollPane JSP= new JScrollPane(jtRootBook);
-		JSP.setBounds(x, y=y+30, 800, 400);
-		RootBook.add(JSP);
 		
 		
 		
-		bRootBookSelectName.setBounds(x+800, y, width-50, height);
+		
+		bRootBookSelectName.setBounds(x+800, y=y+30, width-50, height);
 		bRootBookSelectName.addActionListener(this);
 		RootBook.add(bRootBookSelectName);
 		bRootBookSelectNo.setBounds(x+800, y=y+30, width-50, height);
@@ -731,9 +724,6 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	}
 	//root图书管理
 		//图书记录增加
-	private void join_root_book_create(){
-		
-	}
 	
 	
 	
@@ -765,6 +755,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 				JOptionPane.showMessageDialog(this, "登陆成功");
 				if (user.getRid()==0) {
 					manager = factory.getManagerActionImpl().selectManager(name);
+					power = manager.getPowerLevel();
 				}
 				break;
 			default:
@@ -828,6 +819,15 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			NoPwd.setVisible(false);
 			main.setVisible(true);
 		}else if (a.equals(bRootBook)) {
+			addBookTable();
+			jtRootBook = new mytable(DataBook, columnNames);
+			jtRootBook.setBounds(10, 10, 800, 400);
+			jtRootBook.getTableHeader().setReorderingAllowed(false);
+			jtRootBook.getTableHeader().setResizingAllowed(false);
+			jtRootBook.addMouseListener(this);
+			JScrollPane JSP= new JScrollPane(jtRootBook);
+			JSP.setBounds(10, 40, 800, 400);
+			RootBook.add(JSP);
 			bRootBook.setBackground(Color.LIGHT_GRAY);
 			bRootManager.setBackground(null);
 			bRootReader.setBackground(null);
@@ -1257,7 +1257,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		Book B;
 		while (n<bList.size()) {
 			B = (Book) bList.get(n);
-			if (B.getStatus()==1) {
+			if (B.getStatus()==1||power!=0) {
 				b = new Vector<Object>();
 				b.add(B.getBid());
 				b.add(B.getName());
