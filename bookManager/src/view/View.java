@@ -9,6 +9,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -136,7 +138,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private JButton bRootReader = new JButton("读者管理");
 	private JButton bRootManager = new JButton("管理员管理");
 	private JButton bRootBook = new JButton("书籍管理");
-//	private JButton bRootBookCreate = new JButton("书籍记录创建");
+	private JButton bRootBookCreate = new JButton("书籍记录创建");
 //	private JButton bRootBookSelect = new JButton("书籍记录查询");
 //	private JButton bRootBookDelect = new JButton("书籍记录删除");
 //	private JButton bRootBookUpdate = new JButton("书籍记录修改");
@@ -181,9 +183,52 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	
 	public void init(){
 		this.setTitle("图书馆管理系统");
-		this.setBounds(10, 10, 1200, 600);
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setSize(1200, 600);
+		setResizable(false);
+		setLocationRelativeTo(null);
+		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				if (main.isVisible()||Login.isVisible()||Register.isVisible()||NoPwd.isVisible()) {
+					int a = 0;
+					a = JOptionPane.showConfirmDialog(null, "您是否要退出该系统？");
+					switch (a) {
+					case 0:
+						System.exit(0);
+						break;
+
+					default:
+						break;
+					}
+				}else {
+					int a = 0;
+					a = JOptionPane.showConfirmDialog(null, "您是否要退出该系统？");
+					switch (a) {
+					case 0:
+						System.exit(0);
+						break;
+							
+					default:
+						a = JOptionPane.showConfirmDialog(null, "您是否要注销并返回首页？");
+						switch (a) {
+						case 0:
+							Root.setVisible(false);
+							Reader.setVisible(false);
+							Manager.setVisible(false);
+							main.setVisible(true);
+							break;
+
+						default:
+							break;
+						}
+						break;
+					}
+				}
+			}
+		});
 		getContentPane().setLayout(null);
+		addMouseListener(this);
 		
 		join_JPopupMenu();
 		join_main();
@@ -454,11 +499,9 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		int height = 30;
 		RootBook.setLayout(null);
 //		RootBook.setBounds(panelX+100, panelY+150, panelW-400, panelH-100);
-		RootBook.setBounds(panelX+150, panelY, panelW-200, panelH-100);
+		RootBook.setBounds(panelX+150, panelY-20, panelW-200, panelH-100);
 		
-//		bRootBookCreate.setBounds(x, y, width-50, height);
-//		bRootBookCreate.addActionListener(this);
-//		RootBook.add(bRootBookCreate);
+		
 //		bRootBookDelect.setBounds(x, y=y+30, width-50, height);
 //		bRootBookDelect.addActionListener(this);
 //		RootBook.add(bRootBookDelect);
@@ -473,7 +516,8 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		jtRootBook = new mytable(DataBook, columnNames);
 		jtRootBook.setBounds(x, y, 800, 400);
 		jtRootBook.getTableHeader().setReorderingAllowed(false);
-		jtRootBook.getTableHeader().setResizingAllowed(false); 
+		jtRootBook.getTableHeader().setResizingAllowed(false);
+		jtRootBook.addMouseListener(this);
 		JScrollPane JSP= new JScrollPane(jtRootBook);
 		JSP.setBounds(x, y=y+30, 800, 400);
 		RootBook.add(JSP);
@@ -496,6 +540,9 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		bRootBookSelectKinds.addActionListener(this);
 		RootBook.add(bRootBookSelectKinds);
 		
+		bRootBookCreate.setBounds(x+800, y=y+60, width-50, height);
+		bRootBookCreate.addActionListener(this);
+		RootBook.add(bRootBookCreate);
 		
 		RootBook.setVisible(false);
 		Root.add(RootBook);
@@ -507,7 +554,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		int width = 200;
 		int height = 30;
 		RootReader.setLayout(null);
-		RootReader.setBounds(panelX+100, panelY+120, panelW-400, panelH-100);
+		RootReader.setBounds(panelX+100, panelY+100, panelW-400, panelH-100);
 		
 		bRootReaderCreate.setBounds(x, y, width-50, height);
 		bRootReaderCreate.addActionListener(this);
@@ -532,7 +579,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		int width = 200;
 		int height = 30;
 		RootManager.setLayout(null);
-		RootManager.setBounds(panelX+100, panelY+90, panelW-400, panelH-100);
+		RootManager.setBounds(panelX+100, panelY+70, panelW-400, panelH-100);
 		
 		bRootManagerCreate.setBounds(x, y, width-50, height);
 		bRootManagerCreate.addActionListener(this);
@@ -694,7 +741,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		Object a =  e.getSource();
 		if (a.equals(bTest)) {
 			main.setVisible(false);
-			Manager.setVisible(true);
+			Root.setVisible(true);
 		}else if(a.equals(bRegister)){
 			main.setVisible(false);
 			Register.setVisible(true);
@@ -729,7 +776,9 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 				Login.setVisible(false);
 				Reader.setVisible(true);
 			}else if (n==1) {
-				
+				Root.add(addJLabel(manager.getMname(), 50, 10, 200, 30));
+				Login.setVisible(false);
+				Manager.setVisible(true);
 			}else if (n==2) {
 				Root.add(addJLabel(manager.getMname(), 50, 10, 200, 30));
 				Login.setVisible(false);
@@ -779,22 +828,32 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			NoPwd.setVisible(false);
 			main.setVisible(true);
 		}else if (a.equals(bRootBook)) {
-			
+			bRootBook.setBackground(Color.LIGHT_GRAY);
+			bRootManager.setBackground(null);
+			bRootReader.setBackground(null);
 			RootBook.setVisible(true);
 			RootManager.setVisible(false);
 			RootReader.setVisible(false);
 		}else if (a.equals(bRootManager)) {
+			bRootBook.setBackground(null);
+			bRootManager.setBackground(Color.LIGHT_GRAY);
+			bRootReader.setBackground(null);
 			RootBook.setVisible(false);
 			RootManager.setVisible(true);
 			RootReader.setVisible(false);
 		}else if (a.equals(bRootReader)) {
+			bRootBook.setBackground(null);
+			bRootManager.setBackground(null);
+			bRootReader.setBackground(Color.LIGHT_GRAY);
 			RootBook.setVisible(false);
 			RootManager.setVisible(false);
 			RootReader.setVisible(true);
 		}
-//		else if (a.equals(bRootBookCreate)) {
-//			
-//		}else if (a.equals(bRootBookDelect)) {
+		else if (a.equals(bRootBookCreate)) {
+			this.dispose();
+			new addBook().init(this);
+		}
+//			else if (a.equals(bRootBookDelect)) {
 //			
 //		}else if (a.equals(bRootBookUpdate)) {
 //			
@@ -830,14 +889,23 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			
 		}else if (a.equals(bReaderLib)) {
 			addBookTable();
+			bReaderLib.setBackground(Color.LIGHT_GRAY);
+			bReaderMessage.setBackground(null);
+			bReaderHistory.setBackground(null);
 			ReaderLib.setVisible(true);
 			ReaderMessage.setVisible(false);
 			ReaderHistory.setVisible(false);
 		}else if (a.equals(bReaderMessage)) {
+			bReaderMessage.setBackground(Color.LIGHT_GRAY);
+			bReaderLib.setBackground(null);
+			bReaderHistory.setBackground(null);
 			ReaderLib.setVisible(false);
 			ReaderMessage.setVisible(true);
 			ReaderHistory.setVisible(false);
 		}else if (a.equals(bReaderHistory)) {
+			bReaderHistory.setBackground(Color.LIGHT_GRAY);
+			bReaderMessage.setBackground(null);
+			bReaderLib.setBackground(null);
 			addBookHistory(user.getRid());
 			tm_readerHistory = new DefaultTableModel(DataHistory, HcolumnNames);
 			jtReaderHistory = new mytable(tm_readerHistory);
@@ -997,7 +1065,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		Object a = e.getSource();
-		if (e.getClickCount()==1) {			
+		if (e.getClickCount()==1) {
 			if (e.getSource().equals(jtReaderBook)) {
 				int row = jtReaderBook.getSelectedRow();
 			}else if (e.getButton() == MouseEvent.BUTTON3) {
@@ -1045,6 +1113,9 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 						break;
 					}
 				}
+			}else if (a.equals(jtRootBook)) {
+				int row =  jtRootBook.getSelectedRow();
+				new changeBook(this, DataBook.get(row));
 			}
 		}
 	}
@@ -1284,7 +1355,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		}
 		while (n<HList.size()) {
 			H = (bookLibHistory)HList.get(n);
-			if (H.getStatus()==1) {
+			if (H.getStatus()==1&&H.getLibDate()==null) {
 				h = new Vector<Object>();
 				h.add(H.getBookLibHistory());
 				h.add(H.getBook().getBid());

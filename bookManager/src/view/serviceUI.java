@@ -1,5 +1,6 @@
 package view;
 
+import java.sql.Date;
 import java.util.Vector;
 
 import entity.Book;
@@ -33,6 +34,36 @@ public class serviceUI {
 			if (f.getBookActionImpl().ReturnBookStatus(book)&&f.getManagerActionImpl().ManagerReturnHistoryUpdate(Integer.valueOf(Data.get(row).get(1).toString()))) {
 				flag = T;
 			}
+		}
+		return flag;
+	}
+	public int addBook(Vector<Object> v){
+		int flag = F;
+		java.util.Date date = new java.util.Date();
+		Book book = f.getBook();
+		Date d = new Date(date.getTime());
+		book.setbDate(d);
+		book.setName(v.get(0).toString());
+		book.setBookKindsNo(Integer.valueOf(v.get(1).toString())+1);
+		book.setbPress(v.get(2).toString());
+		book.setbAuthor(v.get(3).toString());
+		book.setbValue(Double.valueOf(v.get(4).toString()));
+		if (f.getBookBizImpl().addBook(book)) {
+			flag = T;
+		}
+		return flag;
+	}
+	public int changeBook(Vector<Object> v){
+		int flag = F;
+		Book book = f.getBook();
+		book.setBid(Integer.valueOf(v.get(0).toString()));
+		book.setName(v.get(1).toString());
+		book.setBookKindsNo(Integer.valueOf(v.get(2).toString())+1);
+		book.setbPress(v.get(3).toString());
+		book.setbAuthor(v.get(4).toString());
+		book.setbValue(Double.valueOf(v.get(5).toString()));
+		if (f.getBookBizImpl().changeBook(book)) {
+			flag = T;
 		}
 		return flag;
 	}

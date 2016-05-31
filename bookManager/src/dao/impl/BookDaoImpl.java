@@ -22,14 +22,14 @@ public class BookDaoImpl implements BookDao {
 		boolean flag = false;
 		int n = 0;
 		try {
-			String sql = "insert into book(bid,name,bDate,bPress,bAuthor,bValue) value(?,?,?,?,?,?)";
+			String sql = "insert into book(name,bDate,bPress,bAuthor,bValue,bookKindsNo) value(?,?,?,?,?,?)";
 			ps = conn.prepareStatement(sql);
-			ps.setInt(1, book.getBid());
-			ps.setString(2, book.getName());
-			ps.setDate(3, book.getbDate());
-			ps.setString(4, book.getbPress());
-			ps.setString(5, book.getbAuthor());
-			ps.setDouble(6, book.getbValue());
+			ps.setString(1, book.getName());
+			ps.setDate(2, book.getbDate());
+			ps.setString(3, book.getbPress());
+			ps.setString(4, book.getbAuthor());
+			ps.setDouble(5, book.getbValue());
+			ps.setInt(6, book.getBookKindsNo());
 			n = ps.executeUpdate();
 			if (n!=0) {
 				flag = true;
@@ -70,16 +70,13 @@ public class BookDaoImpl implements BookDao {
 		boolean flag = false;
 		int n = 0;
 		try {
-			String sql = "update book set bid = ?,name = ?,bDate = ?,bPress = ?,bAuthor = ?,bValue = ?,status = ? where bid = ?";
+			String sql = "update book set name = ?,bPress = ?,bAuthor = ?,bValue = ? where bid = ?";
 			ps = conn.prepareStatement(sql);
-			ps.setInt(1, book.getBid());
-			ps.setString(2, book.getName());
-			ps.setDate(3, book.getbDate());
-			ps.setString(4, book.getbPress());
-			ps.setString(5, book.getbAuthor());
-			ps.setDouble(6, book.getbValue());
-			ps.setInt(7, book.getStatus());
-			ps.setInt(8, book.getBid());
+			ps.setString(1, book.getName());
+			ps.setString(2, book.getbPress());
+			ps.setString(3, book.getbAuthor());
+			ps.setDouble(4, book.getbValue());
+			ps.setInt(5, book.getBid());
 			n = ps.executeUpdate();
 			if (n!=0) {
 				flag = true;

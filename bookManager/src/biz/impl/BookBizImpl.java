@@ -33,5 +33,14 @@ public class BookBizImpl implements BookBiz {
 	public boolean changeBookStatus(Book book) {
 		return f.getBookDaoImpl().updateBookStatus(book);
 	}
+	public ArrayList<entity.bookKinds> bookKinds() {
+		return f.getBookKindsDaoImpl().selectBookKinds();
+	}
+	public boolean addBook(Book book) {
+		return f.getBookDaoImpl().createBook(book);
+	}
+	public boolean changeBook(Book book) {
+		return f.getBookDaoImpl().updateBook(book);
+	}
 
 }

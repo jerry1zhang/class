@@ -41,7 +41,6 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 	}
 
 	public boolean delectBookLibHistory(bookLibHistory bookLibHistory) {
-		// TODO Auto-generated method stub
 		DBhelper_mysql dbh = f.getDBhelper_mysql();
 		Connection conn = dbh.getConnection();
 		PreparedStatement ps = null;

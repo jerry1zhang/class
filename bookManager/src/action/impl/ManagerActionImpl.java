@@ -28,7 +28,6 @@ public class ManagerActionImpl implements ManagerAction {
 	}
 	public boolean ManagerLibHistoryUpdate(int bno) {
 		java.util.Date date = new java.util.Date();
-		System.out.println(date.getTime());
 		Date d = new Date(date.getTime());
 		return f.getManagerBizImpl().updateBookLibHistory(bno, d);
 	}

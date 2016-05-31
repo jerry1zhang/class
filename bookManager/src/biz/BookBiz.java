@@ -10,4 +10,7 @@ public interface BookBiz {
 	public boolean LibBook(Object book,Reader reader);
 	public ArrayList<Object> readerHistory(Reader reader);
 	public boolean changeBookStatus(Book book);
+	public ArrayList<entity.bookKinds> bookKinds();
+	public boolean addBook(Book book);
+	public boolean changeBook(Book book);
 }

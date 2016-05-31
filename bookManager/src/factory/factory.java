@@ -7,6 +7,7 @@ import biz.impl.BookBizImpl;
 import biz.impl.ManagerBizImpl;
 import biz.impl.ReaderBizImpl;
 import dao.impl.BookDaoImpl;
+import dao.impl.BookKindsDaoImpl;
 import dao.impl.BookLibHistoryDaoImpl;
 import dao.impl.ManagerDaoImpl;
 import dao.impl.ReaderDaoImpl;
@@ -49,6 +50,10 @@ public class factory {
 	public BookDaoImpl getBookDaoImpl(){
 		BookDaoImpl bdi = new BookDaoImpl();
 		return bdi;
+	}
+	public BookKindsDaoImpl getBookKindsDaoImpl(){
+		BookKindsDaoImpl bkdi = new BookKindsDaoImpl();
+		return bkdi;
 	}
 	public BookLibHistoryDaoImpl getBookLibHistoryDaoImpl(){
 		BookLibHistoryDaoImpl blhdi = new BookLibHistoryDaoImpl();
