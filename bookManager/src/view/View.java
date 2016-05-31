@@ -46,7 +46,6 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	//全局变量
 	serviceUI su = new serviceUI();
 	private String[] error = new String[5];
-	private int power = -1;
 	entity.Reader user = new entity.Reader();
 	entity.Manager manager = new entity.Manager();
 	Vector<Vector<Object>> DataBook;
@@ -572,7 +571,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 //				jtReaderBook.validate();
 				tm_readerLib = new DefaultTableModel(DataBook, columnNames);
 				tm_readerLib.addTableModelListener(this);
-				jtReaderBook.setModel(tm_readerLib);
+				jtReaderBook = new mytable(tm_readerLib);
 //				jtReaderBook.repaint();
 				jtReaderBook.updateUI();
 			}
@@ -711,7 +710,6 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			String pwd =  new String(jpfLoginPwd.getPassword());
 			int n = -1;
 			n = factory.getReaderActionImpl().Login(name, pwd);
-			power = n;
 			switch (n) {
 			case 0:
 				user = factory.getReaderActionImpl().Login(name);
