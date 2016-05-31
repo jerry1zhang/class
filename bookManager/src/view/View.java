@@ -48,6 +48,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private String[] error = new String[5];
 	private int power = -1;
 	entity.Reader user = new entity.Reader();
+	entity.Manager manager = new entity.Manager();
 	Vector<Vector<Object>> DataBook;
 	Vector<Vector<Object>> DataHistory;
 	Vector<Vector<Object>> DataManagerLib;
@@ -713,10 +714,13 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			power = n;
 			switch (n) {
 			case 0:
+				user = factory.getReaderActionImpl().Login(name);
 			case 1:
 			case 2:
 				JOptionPane.showMessageDialog(this, "登陆成功");
-				user = factory.getReaderActionImpl().Login(name);
+				if (user.getRid()==0) {
+					manager = factory.getManagerActionImpl().selectManager(name);
+				}
 				break;
 			default:
 				JOptionPane.showMessageDialog(this, "用户名或密码错误");
@@ -729,7 +733,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			}else if (n==1) {
 				
 			}else if (n==2) {
-				Root.add(addJLabel(user.getAccounts(), 50, 10, 200, 30));
+				Root.add(addJLabel(manager.getMname(), 50, 10, 200, 30));
 				Login.setVisible(false);
 				Root.setVisible(true);
 			}
@@ -837,7 +841,6 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			ReaderHistory.setVisible(false);
 		}else if (a.equals(bReaderHistory)) {
 			addBookHistory(user.getRid());
-			System.out.println(user.getRid());
 			tm_readerHistory = new DefaultTableModel(DataHistory, HcolumnNames);
 			jtReaderHistory = new mytable(tm_readerHistory);
 			jtReaderHistory.setBounds(10, 10, 800, 400);

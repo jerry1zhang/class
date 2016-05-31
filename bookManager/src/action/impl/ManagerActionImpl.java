@@ -38,5 +38,8 @@ public class ManagerActionImpl implements ManagerAction {
 		Date d = new Date(date.getTime());
 		return f.getManagerBizImpl().updateBookReturnHistory(bno, d);
 	}
+	public Manager selectManager(String name) {
+		return f.getManagerBizImpl().selectManager(name);
+	}
 
 }

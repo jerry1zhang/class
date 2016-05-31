@@ -2,6 +2,7 @@ package biz.impl;
 
 import biz.ReaderBiz;
 import dao.impl.ReaderDaoImpl;
+import entity.Manager;
 import entity.Reader;
 import factory.factory;
 
@@ -20,8 +21,15 @@ public class ReaderBizImpl implements ReaderBiz {
 		int n = -1;
 		Reader r2 = f.getReader();
 		r2 = f.getReaderDaoImpl().selectReader(reader);
-		if (r2.getPwd().equals(reader.getPwd())) {
-			n = 0;
+		if (r2.getRid()!=0) {
+			if (r2.getPwd().equals(reader.getPwd())) {
+				n = 0;
+			}
+		}else {
+			Manager manager = f.getManager();
+			manager.setMname(reader.getAccounts());
+			manager.setMpwd(reader.getPwd());
+			n = f.getManagerBizImpl().Login(manager);
 		}
 		return n;
 	}

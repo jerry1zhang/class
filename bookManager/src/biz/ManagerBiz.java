@@ -10,4 +10,5 @@ public interface ManagerBiz {
 	public int Login(Manager manager);
 	public boolean updateBookLibHistory(int bno,Date hDate);
 	public boolean updateBookReturnHistory(int bno,Date LibDate);
+	public Manager selectManager(String name);
 }

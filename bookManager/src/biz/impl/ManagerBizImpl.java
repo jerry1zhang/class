@@ -32,6 +32,9 @@ public class ManagerBizImpl implements ManagerBiz {
 	public boolean updateBookReturnHistory(int bno, Date LibDate) {
 		return f.getBookLibHistoryDaoImpl().updateBookReturnHistory(bno, LibDate);
 	}
+	public Manager selectManager(String name) {
+		return f.getManagerDaoImpl().selectManager(name);
+	}
 
 	
 }

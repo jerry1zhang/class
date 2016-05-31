@@ -60,6 +60,7 @@ public class factory {
 	}
 	public Reader getReader(){
 		Reader r = new Reader();
+		r.setRid(0);
 		return r;
 	}
 	public Manager getManager(){
