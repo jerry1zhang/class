@@ -16,6 +16,10 @@ public class mytable extends JTable {
 		super(TableModel);
 	}
 	
+	public mytable() {
+		super();
+	}
+	
 	@Override
     public boolean isCellEditable(int row, int column) {
         if (!cellEditable) {

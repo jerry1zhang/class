@@ -32,8 +32,10 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -55,6 +57,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	Vector<Vector<Object>> DataHistory;
 	Vector<Vector<Object>> DataManagerLib;
 	Vector<Vector<Object>> DataManagerReturn;
+	Vector<Vector<Object>> DataRootBook;
 	ArrayList<Object> bList;
 	ArrayList<Object> HList;
 	Vector<String> columnNames;
@@ -619,6 +622,30 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		
 		ReaderLib.add(addJLabel("注意该系统只提供图书借阅预定，还需用户到图书馆自己提取", x, y, width+400, height, Color.red));
 		
+		addBookTable();
+		tm_readerLib = new DefaultTableModel(DataBook, columnNames);
+//		tm_readerLib.addTableModelListener(new TableModelListener() {
+//			
+//			public void tableChanged(TableModelEvent e) {
+//				jtReaderBook = new mytable(tm);
+//				jtReaderBook.repaint(10, 10, 800, 400);
+//				jtReaderBook.updateUI();
+//				jtReaderBook.validate();
+//				tm_readerLib = new DefaultTableModel(DataBook, columnNames);
+//				tm_readerLib.addTableModelListener(this);
+//				jtReaderBook = new mytable(tm_readerLib);
+//				jtReaderBook.repaint();
+//				jtReaderBook.updateUI();
+//			}
+//		});
+		jtReaderBook = new mytable();
+		jtReaderBook.setModel(tm_readerLib);
+		jtReaderBook.setBounds(10, 10, 800, 400);
+		jtReaderBook.getTableHeader().setReorderingAllowed(false);
+		jtReaderBook.addMouseListener(this);
+		jsp1= new JScrollPane(jtReaderBook);
+		jsp1.setBounds(10, 40, 800, 400);
+		ReaderLib.add(jsp1);
 		
 		bReaderLibSelectName.setBounds(x=x+800, y=y+30, width, height);
 		bReaderLibSelectKinds.setBounds(x, y=y+30, width, height);
@@ -867,7 +894,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			NoPwd.setVisible(false);
 			main.setVisible(true);
 		}else if (a.equals(bRootBook)) {
-			addBookTable();
+//			addBookTable();
 			jtRootBook = new mytable(DataBook, columnNames);
 			jtRootBook.setBounds(10, 10, 800, 400);
 			jtRootBook.getTableHeader().setReorderingAllowed(false);
@@ -963,29 +990,29 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		}else if (a.equals(bRootManagerSelect)) {
 			
 		}else if (a.equals(bReaderLib)) {
-			addBookTable();
-			tm_readerLib = new DefaultTableModel(DataBook, columnNames);
-			tm_readerLib.addTableModelListener(new TableModelListener() {
-				
-				public void tableChanged(TableModelEvent e) {
-//					jtReaderBook = new mytable(tm);
-//					jtReaderBook.repaint(10, 10, 800, 400);
+//			addBookTable();
+//			tm_readerLib = new DefaultTableModel(DataBook, columnNames);
+//			tm_readerLib.addTableModelListener(new TableModelListener() {
+//				
+//				public void tableChanged(TableModelEvent e) {
+////					jtReaderBook = new mytable(tm);
+////					jtReaderBook.repaint(10, 10, 800, 400);
+////					jtReaderBook.updateUI();
+////					jtReaderBook.validate();
+//					tm_readerLib = new DefaultTableModel(DataBook, columnNames);
+//					tm_readerLib.addTableModelListener(this);
+//					jtReaderBook = new mytable(tm_readerLib);
+////					jtReaderBook.repaint();
 //					jtReaderBook.updateUI();
-//					jtReaderBook.validate();
-					tm_readerLib = new DefaultTableModel(DataBook, columnNames);
-					tm_readerLib.addTableModelListener(this);
-					jtReaderBook = new mytable(tm_readerLib);
-//					jtReaderBook.repaint();
-					jtReaderBook.updateUI();
-				}
-			});
-			jtReaderBook = new mytable(tm_readerLib);
-			jtReaderBook.setBounds(10, 10, 800, 400);
-			jtReaderBook.getTableHeader().setReorderingAllowed(false);
-			jtReaderBook.addMouseListener(this);
-			jsp1= new JScrollPane(jtReaderBook);
-			jsp1.setBounds(10, 40, 800, 400);
-			ReaderLib.add(jsp1);
+//				}
+//			});
+//			jtReaderBook = new mytable(tm_readerLib);
+//			jtReaderBook.setBounds(10, 10, 800, 400);
+//			jtReaderBook.getTableHeader().setReorderingAllowed(false);
+//			jtReaderBook.addMouseListener(this);
+//			jsp1= new JScrollPane(jtReaderBook);
+//			jsp1.setBounds(10, 40, 800, 400);
+//			ReaderLib.add(jsp1);
 			bReaderLib.setBackground(Color.LIGHT_GRAY);
 			bReaderMessage.setBackground(null);
 			bReaderHistory.setBackground(null);
@@ -1026,11 +1053,14 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 					}else {
 						input = input +"《"+DataBook.get(Rows[i]).get(1)+"》"+"、";
 					}
-					b2List.add(i, bList.get(Rows[i]));
+					Book b = factory.getBook();
+					b.setBid(Integer.valueOf(DataBook.get(Rows[i]).get(0).toString()));
+					b2List.add(i, b);
 				}
 				int answer = JOptionPane.showConfirmDialog(this, "您确定要借阅"+input+"吗？");
 				switch (answer) {
 				case 0:
+					System.out.println(((Book)b2List.get(0)).getbAuthor());
 					if (factory.getBookActionImpl().LibBook(b2List,user)) {
 						JOptionPane.showMessageDialog(this, "恭喜你预定成功！");
 					}else {
@@ -1060,11 +1090,30 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			
 		}else if (a.equals(bReaderLibAll)) {
 			addBookTable();
+			((DefaultTableModel) tm_readerLib).setRowCount(DataBook.size());
+//			tm_readerLib = new DefaultTableModel(DataBook,columnNames);
 			for (int i = 0; i < DataBook.size(); i++) {
 				for (int j = 0; j < DataBook.get(i).size(); j++) {
 					tm_readerLib.setValueAt(DataBook.get(i).get(j), i, j);
 				}
 			}
+//			tm_readerLib = new DefaultTableModel(DataBook,columnNames);
+//			jsp1.remove(jtReaderBook);
+//			jtReaderBook = new mytable(tm_readerLib);
+//			tm_readerLib.add
+//			jtReaderBook.setModel(tm_readerLib);
+//			jtReaderBook.setModel(tm_readerLib);
+//			((Vector<Vector<Object>>) tm_readerLib).removeAllElements();
+//			((AbstractTableModel) tm_readerLib).fireTableStructureChanged();
+//			((AbstractTableModel) tm_readerLib).fireTableDataChanged();
+//			 ((AbstractTableModel)jtReaderBook.getModel()).fireTableStructureChanged();
+//			SwingUtilities.updateComponentTreeUI(jtReaderBook);
+//			jsp1.add(jtReaderBook);
+//			jsp1.validate();
+			jtReaderBook.validate();
+			jtReaderBook.updateUI();
+//			jsp1.updateUI();
+			
 		}else if (a.equals(bReaderMessageUpdate)) {
 			String uname = jtfReaderMessageName.getText();
 			String IDcard = jtfReaderMessageIDcard.getText();
@@ -1364,7 +1413,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	}
 	private void addBookTable(){
 		DataBook = new Vector<Vector<Object>>();
-			bList = factory.getBookActionImpl().allBook();
+		bList = factory.getBookActionImpl().allBook();
 		Vector<Object> b ;
 		int n = 0;
 		Book B;
@@ -1525,6 +1574,37 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		HcolumnNames.add("读者用户名");
 		HcolumnNames.add("借阅时间");
 		HcolumnNames.add("归还时间");
+	}
+	private void addDataRootBookTable(){
+		DataRootBook = new Vector<Vector<Object>>();
+		bList = factory.getBookActionImpl().allBook();
+		Vector<Object> b ;
+		int n = 0;
+		Book B;
+		while (n<bList.size()) {
+			B = (Book) bList.get(n);
+			if (B.getStatus()==1||power!=0) {
+				b = new Vector<Object>();
+				b.add(B.getBid());
+				System.out.println(B.getBid());
+				b.add(B.getName());
+				b.add(B.getbDate());
+				b.add(B.getbPress());
+				b.add(B.getbAuthor());
+				b.add(B.getbValue());
+				b.add(B.getBookKindsName());
+				DataRootBook.add(b);
+			}
+			n++;
+		}
+		columnNames = new Vector<String>();
+		columnNames.add("书籍编号");
+		columnNames.add( "书名");
+		columnNames.add("入馆时间");
+		columnNames.add("出版社");
+		columnNames.add("作者");
+		columnNames.add("市场价");
+		columnNames.add("书籍种类");
 	}
 }
 
