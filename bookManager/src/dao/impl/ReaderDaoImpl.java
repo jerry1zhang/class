@@ -66,17 +66,16 @@ public class ReaderDaoImpl implements ReaderDao {
 		Connection conn = dbh.getConnection();
 		PreparedStatement ps = null;
 		int n = 0;
-		String sql = "update reader set pwd=?,name=?,IDcard=?,LastLoginTime=?,rkid=?,question=?,answer=? where rid = ?";
+		String sql = "update reader set pwd=?,name=?,IDcard=?,question=?,answer=? where rid = ?";
 		try {
 			ps = conn.prepareStatement(sql);
+			System.out.println(reader.getQuestion());
 			ps.setString(1, reader.getPwd());
 			ps.setString(2, reader.getName());
 			ps.setString(3, reader.getIDcard());
-			ps.setDate(4, reader.getLastLoginTime());
-			ps.setInt(5, reader.getRkid());
-			ps.setString(6, reader.getQuestion());
-			ps.setString(7, reader.getAnswer());
-			ps.setInt(8, reader.getRid());
+			ps.setString(4, reader.getQuestion());
+			ps.setString(5, reader.getAnswer());
+			ps.setInt(6, reader.getRid());
 			n = ps.executeUpdate();
 			if (n!=0) {
 				flag = true;

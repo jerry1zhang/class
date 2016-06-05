@@ -8,6 +8,13 @@ public class bookLibHistory {
 	private Reader reader;
 	private Date LibDate;
 	private Date ReturnDate;
+	private Date Hdate;
+	public Date getHdate() {
+		return Hdate;
+	}
+	public void setHdate(Date hdate) {
+		Hdate = hdate;
+	}
 	public Date getReturnDate() {
 		return ReturnDate;
 	}

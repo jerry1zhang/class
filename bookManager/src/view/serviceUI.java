@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.util.Vector;
 
 import entity.Book;
+import entity.Manager;
+import entity.Reader;
 import entity.bookLibHistory;
 import factory.factory;
 
@@ -65,6 +67,15 @@ public class serviceUI {
 		if (f.getBookBizImpl().changeBook(book)) {
 			flag = T;
 		}
+		return flag;
+	}
+	public boolean bNoPwdFind(Vector<Object> v){
+		boolean flag = false;
+		Reader reader = f.getReader();
+		reader.setRid(f.getReaderActionImpl().selectReader(v.get(0).toString()).getRid());
+		reader.setAccounts(v.get(0).toString());
+		reader.setQuestion(v.get(1).toString());
+		reader.setAnswer(v.get(2).toString());
 		return flag;
 	}
 }

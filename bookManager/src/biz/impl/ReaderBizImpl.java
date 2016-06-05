@@ -57,4 +57,12 @@ public class ReaderBizImpl implements ReaderBiz {
 		return flag;
 	}
 
+	public Reader selectReader(Reader reader) {
+		return f.getReaderDaoImpl().selectReader(reader);
+	}
+
+	public boolean changeReader(Reader reader) {
+		return f.getReaderDaoImpl().updateReader(reader);
+	}
+
 }

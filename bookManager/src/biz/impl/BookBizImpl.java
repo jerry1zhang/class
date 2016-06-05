@@ -1,6 +1,7 @@
 package biz.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import biz.BookBiz;
 import entity.Book;
@@ -20,6 +21,9 @@ public class BookBizImpl implements BookBiz {
 		b.setStatus(0);
 		flag = f.getBookDaoImpl().updateBookStatus(b);
 		bookLibHistory bookLibHistory = f.getbookLibHistory(b, reader);
+		java.util.Date date = new Date();
+		java.sql.Date d = new java.sql.Date(date.getTime());
+		bookLibHistory.setHdate(d);
 		f.getBookLibHistoryDaoImpl().createBookLibHistory(bookLibHistory, reader);
 		return flag;
 	}

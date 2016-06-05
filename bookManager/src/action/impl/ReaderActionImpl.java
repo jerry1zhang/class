@@ -1,6 +1,7 @@
 package action.impl;
 
 import java.sql.Date;
+import java.util.Vector;
 
 import action.ReaderAction;
 import biz.impl.ReaderBizImpl;
@@ -44,8 +45,25 @@ public class ReaderActionImpl implements ReaderAction {
 	}
 
 	public boolean information(Reader reader) {
-		// TODO Auto-generated method stub
 		return f.getReaderBizImpl().information(reader);
+	}
+
+	public Reader selectReader(String accounts) {
+		Reader reader = f.getReader();
+		reader.setAccounts(accounts);
+		return f.getReaderBizImpl().selectReader(reader);
+	}
+
+	public boolean changeReader(Vector<Object> reader) {
+		Reader r = f.getReader();
+		r.setRid(Integer.valueOf(reader.get(0).toString()));
+		r.setAccounts(reader.get(1).toString());
+		r.setPwd(reader.get(2).toString());
+		r.setName(reader.get(3).toString());
+		r.setIDcard(reader.get(4).toString());
+		r.setQuestion(reader.get(5).toString());
+		r.setAnswer(reader.get(6).toString());
+		return f.getReaderBizImpl().changeReader(r);
 	}
 
 

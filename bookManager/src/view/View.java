@@ -880,7 +880,26 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			Register.setVisible(false);
 			main.setVisible(true);
 		}else if (a.equals(bNoPwdFind)) {
-			//TODO bNoPwdFind
+			Vector<Object> v = new Vector<Object>();
+			v.add(jtfNoPwdName.getText());
+			v.add(jtfNoPwdQuestion.getText());
+			v.add(jtfNoPwdAnswer.getText());
+			entity.Reader r = factory.getReaderActionImpl().selectReader(v.get(0).toString());
+			if (r.getQuestion().equals(v.get(1).toString())) {
+				if (r.getAnswer().equals(v.get(2).toString())) {
+					this.dispose();
+					new findReader(r, this);
+					main.setVisible(true);
+					NoPwd.setVisible(false);
+					jtfNoPwdName.setText("");
+					jtfNoPwdQuestion.setText("");
+					jtfNoPwdAnswer.setText("");
+				}else {
+					JOptionPane.showMessageDialog(this, "验证回答错误");
+				}
+			}else {
+				JOptionPane.showMessageDialog(this, "验证问题错误");
+			}
 		}else if (a.equals(bNoPwdBack)) {
 			NoPwd.setVisible(false);
 			main.setVisible(true);
@@ -1063,14 +1082,14 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 //			tm_readerLib.addTableModelListener(new TableModelListener() {
 //				
 //				public void tableChanged(TableModelEvent e) {
-////					jtReaderBook = new mytable(tm);
-////					jtReaderBook.repaint(10, 10, 800, 400);
-////					jtReaderBook.updateUI();
-////					jtReaderBook.validate();
+//					jtReaderBook = new mytable(tm);
+//					jtReaderBook.repaint(10, 10, 800, 400);
+//					jtReaderBook.updateUI();
+//					jtReaderBook.validate();
 //					tm_readerLib = new DefaultTableModel(DataBook, columnNames);
 //					tm_readerLib.addTableModelListener(this);
 //					jtReaderBook = new mytable(tm_readerLib);
-////					jtReaderBook.repaint();
+//					jtReaderBook.repaint();
 //					jtReaderBook.updateUI();
 //				}
 //			});

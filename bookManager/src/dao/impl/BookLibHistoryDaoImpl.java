@@ -93,7 +93,7 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			String sql = "select bookLibHistoryNo,bid,rid,LibDate,ReturnDate from bookLibHistory where rid = ?";
+			String sql = "select bookLibHistoryNo,bid,rid,LibDate,ReturnDate,HData from bookLibHistory where rid = ?";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, bookLibHistory.getReader().getRid());
 			rs = ps.executeQuery();
@@ -108,6 +108,7 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 				bookLibHistory.setReader(reader);
 				bookLibHistory.setLibDate(rs.getDate("LibDate"));
 				bookLibHistory.setReturnDate(rs.getDate("ReturnDate"));
+				bookLibHistory.setHdate(rs.getDate("HData"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

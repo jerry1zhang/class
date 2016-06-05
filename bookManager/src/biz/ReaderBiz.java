@@ -8,4 +8,6 @@ public interface ReaderBiz {
 	public boolean matching(Reader reader);//∆•≈‰
 	public Reader Login(String accounts);
 	public boolean information(Reader reader);
+	public Reader selectReader(Reader reader);
+	public boolean changeReader(Reader reader);
 }
