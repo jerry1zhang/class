@@ -2,6 +2,7 @@ package action.impl;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import action.ManagerAction;
 import entity.Manager;
@@ -33,12 +34,32 @@ public class ManagerActionImpl implements ManagerAction {
 	}
 	public boolean ManagerReturnHistoryUpdate(int bno) {
 		java.util.Date date = new java.util.Date();
-		System.out.println(date.getTime());
 		Date d = new Date(date.getTime());
 		return f.getManagerBizImpl().updateBookReturnHistory(bno, d);
 	}
 	public Manager selectManager(String name) {
 		return f.getManagerBizImpl().selectManager(name);
+	}
+	public ArrayList<Object> selectAllManager() {
+		return f.getManagerBizImpl().selectAllManager();
+	}
+	public boolean addManager(Vector<Object> Manager) {
+		Manager manager = f.getManager();
+		manager.setMname(Manager.get(0).toString());
+		manager.setMpwd(Manager.get(1).toString());
+		manager.setPowerLevel(Integer.valueOf(Manager.get(2).toString()));
+		java.util.Date date = new java.util.Date();
+		Date d = new Date(date.getTime());
+		manager.setLastLoginTime(d);
+		return f.getManagerBizImpl().AddManager(manager);
+	}
+	public boolean changeManager(Vector<Object> Manager) {
+		Manager manager = f.getManager();
+		manager.setMid(Integer.valueOf(Manager.get(0).toString()));
+		manager.setMname(Manager.get(1).toString());
+		manager.setMpwd(Manager.get(2).toString());
+		manager.setPowerLevel(Integer.valueOf(Manager.get(3).toString()));
+		return f.getManagerBizImpl().changeManager(manager);
 	}
 
 }

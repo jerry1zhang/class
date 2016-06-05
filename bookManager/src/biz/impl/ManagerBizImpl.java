@@ -35,6 +35,15 @@ public class ManagerBizImpl implements ManagerBiz {
 	public Manager selectManager(String name) {
 		return f.getManagerDaoImpl().selectManager(name);
 	}
+	public ArrayList<Object> selectAllManager() {
+		return f.getManagerDaoImpl().selectManager();
+	}
+	public boolean AddManager(Manager manager) {
+		return f.getManagerDaoImpl().createManager(manager);
+	}
+	public boolean changeManager(Manager manager) {
+		return f.getManagerDaoImpl().updateManager(manager);
+	}
 
 	
 }

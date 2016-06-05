@@ -131,7 +131,6 @@ public class addBook extends JFrame implements ActionListener{
 	}
 	public void actionPerformed(ActionEvent e) {
 		Object a = e.getSource();
-		System.out.println(123);
 		if (a.equals(button)) {
 			v.add(textField.getText());
 			v.add(comboBox.getSelectedIndex());

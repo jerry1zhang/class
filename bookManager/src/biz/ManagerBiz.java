@@ -11,4 +11,7 @@ public interface ManagerBiz {
 	public boolean updateBookLibHistory(int bno,Date hDate);
 	public boolean updateBookReturnHistory(int bno,Date LibDate);
 	public Manager selectManager(String name);
+	public ArrayList<Object> selectAllManager();
+	public boolean AddManager(Manager manager);
+	public boolean changeManager(Manager manager);
 }

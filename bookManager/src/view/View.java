@@ -21,7 +21,9 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -58,13 +60,18 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	Vector<Vector<Object>> DataManagerLib;
 	Vector<Vector<Object>> DataManagerReturn;
 	Vector<Vector<Object>> DataRootBook;
+	Vector<Vector<Object>> DataRootManager;
 	ArrayList<Object> bList;
 	ArrayList<Object> HList;
+	ArrayList<Object> RMList;
 	Vector<String> columnNames;
 	Vector<String> HcolumnNames;
+	Vector<String> RMcolumnNames;
 	String time;
 	TableModel tm_readerLib;
 	TableModel tm_readerHistory;
+	TableModel tm_rootBook;
+	TableModel tm_rootManager;
 	JScrollPane jsp1;
 	//判断
 	private JLabel judgment1 = new JLabel();
@@ -92,6 +99,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	//JPopupMenu
 	private JPopupMenu jpm = new JPopupMenu();
 	private JPopupMenu jpmManagerBook = new JPopupMenu();
+	private JComboBox jcb = new JComboBox();
 	//JLabel
 	private JLabel jl;
 	private JLabel jltime = new JLabel();
@@ -107,6 +115,10 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private JTextField jtfReaderMessageIDcard = new JTextField();
 	private JTextField jtfManagerLib = new JTextField();
 	private JTextField jtfManagerReturn = new JTextField();
+	private JTextField jtfRootManagerMid = new JTextField();
+	private JTextField jtfRootManagerMname = new JTextField();
+	private JTextField jtfRootManagerMpwd = new JTextField();
+	private JTextField jtfRootManagerpowerLevel = new JTextField();
 	//JPasswordField
 	private JPasswordField jpfLoginPwd = new JPasswordField();
 	private JPasswordField jpfRegisterPwd1 = new JPasswordField();
@@ -117,6 +129,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private JTable jtReaderHistory;
 	private JTable jtManagerLib;
 	private JTable jtManagerReturn;
+	private JTable jtRootManager;
 	//JPanel
 	private JPanel main = new JPanel();
 	private JPanel Login = new JPanel();
@@ -124,15 +137,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private JPanel NoPwd = new JPanel();
 	private JPanel Root = new JPanel();
 		private JPanel RootReader = new JPanel();
-			private JPanel RootReaderAdd = new JPanel();
-			private JPanel RootReaderSelect = new JPanel();
-			private JPanel RootReaderChange = new JPanel();
-			private JPanel RootReaderDel = new JPanel();
 		private JPanel RootManager = new JPanel();
-			private JPanel RootManagerAdd = new JPanel();
-			private JPanel RootManagerSelect = new JPanel();
-			private JPanel RootManagerChange = new JPanel();
-			private JPanel RootManagerDel = new JPanel();
 		private JPanel RootBook = new JPanel();
 	private JPanel Manager = new JPanel();
 		private JPanel ManagerLib  = new JPanel();
@@ -164,14 +169,18 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private JButton bRootBookSelectAuthor = new JButton("书籍作者查询");
 	private JButton bRootBookSelectPress = new JButton("书籍出版社查询");
 	private JButton bRootBookSelectKinds = new JButton("书籍类型查询");
-	private JButton bRootReaderCreate = new JButton("读者记录创建");
-	private JButton bRootReaderSelect = new JButton("读者记录查询");
-	private JButton bRootReaderDelect = new JButton("读者记录删除");
-	private JButton bRootReaderUpdate = new JButton("读者记录修改");
-	private JButton bRootManagerCreate = new JButton("管理员记录创建");
-	private JButton bRootManagerSelect = new JButton("管理员记录查询");
-	private JButton bRootManagerDelect = new JButton("管理员记录删除");
-	private JButton bRootManagerUpdate = new JButton("管理员记录修改");
+//	private JButton bRootReaderCreate = new JButton("读者记录创建");
+//	private JButton bRootReaderSelect = new JButton("读者记录查询");
+//	private JButton bRootReaderDelect = new JButton("读者记录删除");
+//	private JButton bRootReaderUpdate = new JButton("读者记录修改");
+//	private JButton bRootManagerCreate = new JButton("管理员记录创建");
+//	private JButton bRootManagerSelect = new JButton("管理员记录查询");
+//	private JButton bRootManagerDelect = new JButton("管理员记录删除");
+//	private JButton bRootManagerUpdate = new JButton("管理员记录修改");
+	private JButton bRootManagerAdd = new JButton("新增纪录");
+	private JButton bRootManagerUpdate = new JButton("提交修改");
+	private JButton bRootManagerclear = new JButton("清空");
+	private JButton bRootManagerNew = new JButton("更新表格数据");
 	private JButton bManagerLib = new JButton("图书借阅");
 	private JButton bManagerReturn = new JButton("图书归还");
 	private JButton bManagerLibUpdate = new JButton("提交");
@@ -194,9 +203,36 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			DateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			time=format.format(date);
 			jltime.setText("北京时间："+time);
+			
+		}
+	};
+	private TimerTask table = new TimerTask() {
+		
+		@Override
+		public void run() {
+//			if (RootBook.isVisible()) {
+//				addDataRootBookTable();
+//				((DefaultTableModel)tm_rootBook).setRowCount(DataRootBook.size());
+//				for (int i = 0; i < DataRootBook.size(); i++) {
+//					for (int j = 0; j < DataRootBook.get(i).size(); j++) {
+//						tm_rootBook.setValueAt(DataRootBook.get(i).get(j), i, j);
+//					}
+//				}
+//				jtRootBook.updateUI();
+//			}else if (RootManager.isVisible()) {
+//				addDataRootManagerTable();
+//				((DefaultTableModel)tm_rootManager).setRowCount(DataRootManager.size());
+//				for (int i = 0; i < DataRootManager.size(); i++) {
+//					for (int j = 0; j < DataRootManager.get(i).size(); j++) {
+//						tm_rootManager.setValueAt(DataRootManager.get(i).get(j), i, j);
+//					}
+//				}
+//				jtRootManager.updateUI();
+//			}
 		}
 	};
 	private Timer timer = new Timer();
+	private Timer tableTimer = new Timer();
 	
 	public void init(){
 		this.setTitle("图书馆管理系统");
@@ -259,6 +295,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		
 		timer.schedule(tt, 0, 1000);
 		jltime.setBounds(0, 0, 200, 30);
+		tableTimer.schedule(table, 0,10000);
 		getContentPane().add(jltime);
 		this.setVisible(true);
 	}
@@ -565,18 +602,20 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		RootReader.setLayout(null);
 		RootReader.setBounds(panelX+100, panelY+100, panelW-400, panelH-100);
 		
-		bRootReaderCreate.setBounds(x, y, width-50, height);
-		bRootReaderCreate.addActionListener(this);
-		RootReader.add(bRootReaderCreate);
-		bRootReaderDelect.setBounds(x, y=y+30, width-50, height);
-		bRootReaderDelect.addActionListener(this);
-		RootReader.add(bRootReaderDelect);
-		bRootReaderUpdate.setBounds(x, y=y+30, width-50, height);
-		bRootReaderUpdate.addActionListener(this);
-		RootReader.add(bRootReaderUpdate);
-		bRootReaderSelect.setBounds(x, y=y+30, width-50, height);
-		bRootReaderSelect.addActionListener(this);
-		RootReader.add(bRootReaderSelect);
+//		bRootReaderCreate.setBounds(x, y, width-50, height);
+//		bRootReaderCreate.addActionListener(this);
+//		RootReader.add(bRootReaderCreate);
+//		bRootReaderDelect.setBounds(x, y=y+30, width-50, height);
+//		bRootReaderDelect.addActionListener(this);
+//		RootReader.add(bRootReaderDelect);
+//		bRootReaderUpdate.setBounds(x, y=y+30, width-50, height);
+//		bRootReaderUpdate.addActionListener(this);
+//		RootReader.add(bRootReaderUpdate);
+//		bRootReaderSelect.setBounds(x, y=y+30, width-50, height);
+//		bRootReaderSelect.addActionListener(this);
+//		RootReader.add(bRootReaderSelect);
+		
+		
 		
 		RootReader.setVisible(false);
 		Root.add(RootReader);
@@ -585,28 +624,58 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	private void join_root_manager(){
 		int x = 10;
 		int y = 10;
-		int width = 200;
+		int width = 150;
 		int height = 30;
 		RootManager.setLayout(null);
 		RootManager.setBounds(panelX+100, panelY+70, panelW-400, panelH-100);
 		
-		bRootManagerCreate.setBounds(x, y, width-50, height);
-		bRootManagerCreate.addActionListener(this);
-		RootManager.add(bRootManagerCreate);
-		bRootManagerDelect.setBounds(x, y=y+30, width-50, height);
-		bRootManagerDelect.addActionListener(this);
-		RootManager.add(bRootManagerDelect);
-		bRootManagerUpdate.setBounds(x, y=y+30, width-50, height);
-		bRootManagerUpdate.addActionListener(this);
-		RootManager.add(bRootManagerUpdate);
-		bRootManagerSelect.setBounds(x, y=y+30, width-50, height);
-		bRootManagerSelect.addActionListener(this);
-		RootManager.add(bRootManagerSelect);
+//		bRootManagerCreate.setBounds(x, y, width-50, height);
+//		bRootManagerCreate.addActionListener(this);
+//		RootManager.add(bRootManagerCreate);
+//		bRootManagerDelect.setBounds(x, y=y+30, width-50, height);
+//		bRootManagerDelect.addActionListener(this);
+//		RootManager.add(bRootManagerDelect);
+//		bRootManagerUpdate.setBounds(x, y=y+30, width-50, height);
+//		bRootManagerUpdate.addActionListener(this);
+//		RootManager.add(bRootManagerUpdate);
+//		bRootManagerSelect.setBounds(x, y=y+30, width-50, height);
+//		bRootManagerSelect.addActionListener(this);
+//		RootManager.add(bRootManagerSelect);
+//		
+//		join_root_1_1();
+//		join_root_1_2();
+//		join_root_1_3();
+//		join_root_1_4();
 		
-		join_root_1_1();
-		join_root_1_2();
-		join_root_1_3();
-		join_root_1_4();
+		RootManager.add(addJLabel("员工id", x=x+350, y, width, height));
+		jtfRootManagerMid.setBounds(x+150, y, width, height);
+		jtfRootManagerMid.setEditable(false);
+		RootManager.add(jtfRootManagerMid);
+		RootManager.add(addJLabel("员工账号", x, y=y+30, width, height));
+		jtfRootManagerMname.setBounds(x+150, y, width, height);
+		RootManager.add(jtfRootManagerMname);
+		RootManager.add(addJLabel("员工密码", x, y=y+30, width, height));
+		jtfRootManagerMpwd.setBounds(x+150, y, width, height);
+		RootManager.add(jtfRootManagerMpwd);
+		//TODO 员工权限等级下拉框
+		RootManager.add(addJLabel("员工权限等级", x, y=y+30, width, height));
+		jcb.setModel(new DefaultComboBoxModel(new String[] {"\u5458\u5DE5\u6743\u9650", "\u6700\u9AD8\u6743\u9650"}));
+		jcb.setBounds(x+150, y, width, height);
+		RootManager.add(jcb);
+		
+		bRootManagerAdd.setBounds(x, y=y+30, 100, height);
+		bRootManagerAdd.addActionListener(this);
+		bRootManagerUpdate.setBounds(x+150, y, 100, height);
+		bRootManagerUpdate.addActionListener(this);
+		bRootManagerclear.setBounds(x+300, y, 100, height);
+		bRootManagerclear.addActionListener(this);
+		RootManager.add(bRootManagerAdd);
+		RootManager.add(bRootManagerUpdate);
+		RootManager.add(bRootManagerclear);
+		
+		bRootManagerNew.setBounds(x-20, y=y+60, 100, height);
+		bRootManagerNew.addActionListener(this);
+		RootManager.add(bRootManagerNew);
 		
 		RootManager.setVisible(false);
 		Root.add(RootManager);
@@ -622,30 +691,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		
 		ReaderLib.add(addJLabel("注意该系统只提供图书借阅预定，还需用户到图书馆自己提取", x, y, width+400, height, Color.red));
 		
-		addBookTable();
-		tm_readerLib = new DefaultTableModel(DataBook, columnNames);
-//		tm_readerLib.addTableModelListener(new TableModelListener() {
-//			
-//			public void tableChanged(TableModelEvent e) {
-//				jtReaderBook = new mytable(tm);
-//				jtReaderBook.repaint(10, 10, 800, 400);
-//				jtReaderBook.updateUI();
-//				jtReaderBook.validate();
-//				tm_readerLib = new DefaultTableModel(DataBook, columnNames);
-//				tm_readerLib.addTableModelListener(this);
-//				jtReaderBook = new mytable(tm_readerLib);
-//				jtReaderBook.repaint();
-//				jtReaderBook.updateUI();
-//			}
-//		});
-		jtReaderBook = new mytable();
-		jtReaderBook.setModel(tm_readerLib);
-		jtReaderBook.setBounds(10, 10, 800, 400);
-		jtReaderBook.getTableHeader().setReorderingAllowed(false);
-		jtReaderBook.addMouseListener(this);
-		jsp1= new JScrollPane(jtReaderBook);
-		jsp1.setBounds(10, 40, 800, 400);
-		ReaderLib.add(jsp1);
+		
 		
 		bReaderLibSelectName.setBounds(x=x+800, y=y+30, width, height);
 		bReaderLibSelectKinds.setBounds(x, y=y+30, width, height);
@@ -746,61 +792,6 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		ManagerReturn.setVisible(false);
 		Manager.add(ManagerReturn);
 	}
-	//root员工管理
-	private void join_root_1_1(){
-		int x = 10;
-		int y = 10;
-		int width = 150;
-		int height = 30;
-		RootManagerAdd.setLayout(null);
-		RootManagerAdd.setBounds(panelX+150, panelY, 800, 400);
-		
-		
-		
-		RootManagerAdd.setVisible(false);
-		RootManager.add(RootManagerAdd);
-	}
-	private void join_root_1_2(){
-		int x = 10;
-		int y = 10;
-		int width = 150;
-		int height = 30;
-		RootManagerDel.setLayout(null);
-		RootManagerDel.setBounds(panelX+150, panelY, 800, 400);
-		
-		
-		
-		RootManagerDel.setVisible(false);
-		RootManager.add(RootManagerDel);
-	}
-	private void join_root_1_3(){
-		int x = 10;
-		int y = 10;
-		int width = 150;
-		int height = 30;
-		RootManagerChange.setLayout(null);
-		RootManagerChange.setBounds(panelX+150, panelY, 800, 400);
-		
-		RootManagerChange.add(addJLabel("123", x, y, width, height));
-		
-		RootManagerChange.setVisible(false);
-		RootManager.add(RootManagerChange);
-	}
-	private void join_root_1_4(){
-		int x = 10;
-		int y = 10;
-		int width = 150;
-		int height = 30;
-		RootManagerSelect.setLayout(null);
-		RootManagerSelect.setBounds(panelX+150, panelY, 800, 400);
-		
-		RootManagerSelect.add(addJLabel("123", x, y, width, height));
-		
-		RootManagerSelect.setVisible(false);
-		RootManager.add(RootManagerSelect);
-	}
-	//root读者管理
-	
 	
 	public void actionPerformed(ActionEvent e) {
 		Object a =  e.getSource();
@@ -889,13 +880,15 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			Register.setVisible(false);
 			main.setVisible(true);
 		}else if (a.equals(bNoPwdFind)) {
-			
+			//TODO bNoPwdFind
 		}else if (a.equals(bNoPwdBack)) {
 			NoPwd.setVisible(false);
 			main.setVisible(true);
 		}else if (a.equals(bRootBook)) {
 //			addBookTable();
-			jtRootBook = new mytable(DataBook, columnNames);
+			addDataRootBookTable();
+			tm_rootBook  =new DefaultTableModel(DataRootBook, columnNames);
+			jtRootBook = new mytable(tm_rootBook);
 			jtRootBook.setBounds(10, 10, 800, 400);
 			jtRootBook.getTableHeader().setReorderingAllowed(false);
 			jtRootBook.getTableHeader().setResizingAllowed(false);
@@ -918,6 +911,18 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			RootManager.setVisible(false);
 			RootReader.setVisible(false);
 		}else if (a.equals(bRootManager)) {
+			addDataRootManagerTable();
+			if (tm_rootManager!=null) {
+				((DefaultTableModel) tm_rootManager).setRowCount(DataRootManager.size());
+			}
+			System.out.println(DataRootManager.get(0).get(0));
+			tm_rootManager = new DefaultTableModel(DataRootManager,RMcolumnNames);
+			jtRootManager = new mytable(tm_rootManager);
+			jtRootManager.addMouseListener(this);
+			JScrollPane JSP = new JScrollPane(jtRootManager);
+			JSP.setBounds(10, 10, 300, 400);
+			RootManager.add(JSP);
+			jtRootManager.updateUI();
 			bRootBook.setBackground(null);
 			bRootManager.setBackground(Color.LIGHT_GRAY);
 			bRootReader.setBackground(null);
@@ -931,29 +936,50 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			RootBook.setVisible(false);
 			RootManager.setVisible(false);
 			RootReader.setVisible(true);
-		}else if (a.equals(bRootManagerCreate)) {
-			RootManagerAdd.setVisible(true);
-			RootManagerDel.setVisible(false);
-			RootManagerChange.setVisible(false);
-			RootManagerSelect.setVisible(false);
-		}else if (a.equals(bRootManagerDelect)) {
-			RootManagerAdd.setVisible(false);
-			RootManagerDel.setVisible(true);
-			RootManagerChange.setVisible(false);
-			RootManagerSelect.setVisible(false);
-		}else if (a.equals(bRootManagerUpdate)) {
-			RootManagerAdd.setVisible(false);
-			RootManagerDel.setVisible(false);
-			RootManagerChange.setVisible(true);
-			RootManagerSelect.setVisible(false);
-		}else if (a.equals(bRootManagerSelect)) {
-			RootManagerAdd.setVisible(false);
-			RootManagerDel.setVisible(false);
-			RootManagerChange.setVisible(false);
-			RootManagerSelect.setVisible(true);
-		}else if (a.equals(bRootBookCreate)) {
-			this.dispose();
-			new addBook().init(this);
+		}
+//		else if (a.equals(bRootManagerCreate)) {
+//			RootManagerAdd.setVisible(true);
+//			RootManagerDel.setVisible(false);
+//			RootManagerChange.setVisible(false);
+//			RootManagerSelect.setVisible(false);
+//		}else if (a.equals(bRootManagerDelect)) {
+//			RootManagerAdd.setVisible(false);
+//			RootManagerDel.setVisible(true);
+//			RootManagerChange.setVisible(false);
+//			RootManagerSelect.setVisible(false);
+//		}else if (a.equals(bRootManagerUpdate)) {
+//			RootManagerAdd.setVisible(false);
+//			RootManagerDel.setVisible(false);
+//			RootManagerChange.setVisible(true);
+//			RootManagerSelect.setVisible(false);
+//		}else if (a.equals(bRootManagerSelect)) {
+//			RootManagerAdd.setVisible(false);
+//			RootManagerDel.setVisible(false);
+//			RootManagerChange.setVisible(false);
+//			RootManagerSelect.setVisible(true);
+//		}
+		else if (a.equals(bRootBookCreate)) {
+			addBook addBook = new addBook();
+			addBook.init(this);
+//			TaddBook tb = new TaddBook(addBook);
+//			Thread t = new Thread(tb);
+//			try {
+//				t.join();
+//				
+//			} catch (InterruptedException e1) {
+//				e1.printStackTrace();
+//			};
+//			
+//			System.out.println(1);
+//			addDataRootBookTable();
+//			((DefaultTableModel)tm_rootBook).setRowCount(DataRootBook.size());
+//			for (int i = 0; i < DataRootBook.size(); i++) {
+//				for (int j = 0; j < DataRootBook.get(i).size(); j++) {
+//					tm_rootBook.setValueAt(DataRootBook.get(i).get(j), i, j);
+//				}
+//			}
+//			jtRootBook.updateUI();
+			
 		}
 //			else if (a.equals(bRootBookDelect)) {
 //			
@@ -973,23 +999,65 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		}else if (a.equals(bRootBookSelectKinds)) {
 			JOptionPane.showInputDialog(this, "请输入你要查询的书籍类型");
 		}
-		else if (a.equals(bRootReaderCreate)) {
-			
-		}else if (a.equals(bRootReaderDelect)) {
-			
-		}else if (a.equals(bRootReaderUpdate)) {
-			
-		}else if (a.equals(bRootReaderSelect)) {
-			
-		}else if (a.equals(bRootManagerCreate)) {
-			
-		}else if (a.equals(bRootManagerDelect)) {
+//		else if (a.equals(bRootReaderCreate)) {
+//			//TODO bRootReaderCreate
+//		}else if (a.equals(bRootReaderDelect)) {
+//			//TODO bRootReaderDelect
+//		}else if (a.equals(bRootReaderUpdate)) {
+//			
+//		}else if (a.equals(bRootReaderSelect)) {
+//			
+//		}
+		else if (a.equals(bRootManagerAdd)) {
+			this.dispose();
+			new addManager(this);
 			
 		}else if (a.equals(bRootManagerUpdate)) {
+			//TODO bRootManagerUpdate
+			Vector<Object> v = new Vector<Object>();
+			v.add(jtfRootManagerMid.getText());
+			v.add(jtfRootManagerMname.getText());
+			v.add(jtfRootManagerMpwd.getText());
+			v.add(jcb.getItemCount()+1);
+			if (factory.getManagerActionImpl().changeManager(v)) {
+				JOptionPane.showMessageDialog(this, "修改成功");
+				((DefaultTableModel)tm_rootManager).setRowCount(DataRootManager.size());
+				for (int i = 0; i < DataRootManager.size(); i++) {
+					for (int j = 0; j < DataRootManager.get(i).size(); j++) {
+						tm_rootManager.setValueAt(DataRootManager.get(i).get(j), i, j);
+					}
+				}
+				jtRootManager.updateUI();
+			}else {
+				JOptionPane.showMessageDialog(this, "修改失败");
+			}
 			
-		}else if (a.equals(bRootManagerSelect)) {
-			
-		}else if (a.equals(bReaderLib)) {
+		}else if (a.equals(bRootManagerclear)) {
+			jtfRootManagerMid.setText("");
+			jtfRootManagerMname.setText("");
+			jtfRootManagerMpwd.setText("");
+			jcb.setSelectedIndex(0);
+			jtRootManager.setSelectionMode(0);
+		}else if (a.equals(bRootManagerNew)) {
+			addDataRootManagerTable();
+			((DefaultTableModel)tm_rootManager).setRowCount(DataRootManager.size());
+			for (int i = 0; i < DataRootManager.size(); i++) {
+				for (int j = 0; j < DataRootManager.get(i).size(); j++) {
+					tm_rootManager.setValueAt(DataRootManager.get(i).get(j), i, j);
+				}
+			}
+			jtRootManager.updateUI();
+		}
+//		else if (a.equals(bRootManagerCreate)) {
+//			
+//		}else if (a.equals(bRootManagerDelect)) {
+//			
+//		}else if (a.equals(bRootManagerUpdate)) {
+//			
+//		}else if (a.equals(bRootManagerSelect)) {
+//			
+//		}
+		else if (a.equals(bReaderLib)) {
 //			addBookTable();
 //			tm_readerLib = new DefaultTableModel(DataBook, columnNames);
 //			tm_readerLib.addTableModelListener(new TableModelListener() {
@@ -1013,6 +1081,16 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 //			jsp1= new JScrollPane(jtReaderBook);
 //			jsp1.setBounds(10, 40, 800, 400);
 //			ReaderLib.add(jsp1);
+			addBookTable();
+			tm_readerLib = new DefaultTableModel(DataBook, columnNames);
+			jtReaderBook = new mytable();
+			jtReaderBook.setModel(tm_readerLib);
+			jtReaderBook.setBounds(10, 10, 800, 400);
+			jtReaderBook.getTableHeader().setReorderingAllowed(false);
+			jtReaderBook.addMouseListener(this);
+			jsp1= new JScrollPane(jtReaderBook);
+			jsp1.setBounds(10, 40, 800, 400);
+			ReaderLib.add(jsp1);
 			bReaderLib.setBackground(Color.LIGHT_GRAY);
 			bReaderMessage.setBackground(null);
 			bReaderHistory.setBackground(null);
@@ -1063,6 +1141,14 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 					System.out.println(((Book)b2List.get(0)).getbAuthor());
 					if (factory.getBookActionImpl().LibBook(b2List,user)) {
 						JOptionPane.showMessageDialog(this, "恭喜你预定成功！");
+						addBookTable();
+						((DefaultTableModel) tm_readerLib).setRowCount(DataBook.size());
+						for (int i = 0; i < DataBook.size(); i++) {
+							for (int j = 0; j < DataBook.get(i).size(); j++) {
+								tm_readerLib.setValueAt(DataBook.get(i).get(j), i, j);
+							}
+						}
+						jtReaderBook.updateUI();
 					}else {
 						JOptionPane.showMessageDialog(this, "预定失败，请稍后重试");
 					}
@@ -1081,38 +1167,24 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		}else if (a.equals(bReaderLibSelectName)) {
 			String input = JOptionPane.showInputDialog(this, "123");
 			addBookTable(input);
+			((DefaultTableModel) tm_readerLib).setRowCount(DataBook.size());
 			for (int i = 0; i < DataBook.size(); i++) {
 				for (int j = 0; j < DataBook.get(i).size(); j++) {
 					tm_readerLib.setValueAt(DataBook.get(i).get(j), i, j);
 				}
 			}
+			jtReaderBook.updateUI();
 		}else if (a.equals(bReaderLibSelectKinds)) {
 			
 		}else if (a.equals(bReaderLibAll)) {
 			addBookTable();
 			((DefaultTableModel) tm_readerLib).setRowCount(DataBook.size());
-//			tm_readerLib = new DefaultTableModel(DataBook,columnNames);
 			for (int i = 0; i < DataBook.size(); i++) {
 				for (int j = 0; j < DataBook.get(i).size(); j++) {
 					tm_readerLib.setValueAt(DataBook.get(i).get(j), i, j);
 				}
 			}
-//			tm_readerLib = new DefaultTableModel(DataBook,columnNames);
-//			jsp1.remove(jtReaderBook);
-//			jtReaderBook = new mytable(tm_readerLib);
-//			tm_readerLib.add
-//			jtReaderBook.setModel(tm_readerLib);
-//			jtReaderBook.setModel(tm_readerLib);
-//			((Vector<Vector<Object>>) tm_readerLib).removeAllElements();
-//			((AbstractTableModel) tm_readerLib).fireTableStructureChanged();
-//			((AbstractTableModel) tm_readerLib).fireTableDataChanged();
-//			 ((AbstractTableModel)jtReaderBook.getModel()).fireTableStructureChanged();
-//			SwingUtilities.updateComponentTreeUI(jtReaderBook);
-//			jsp1.add(jtReaderBook);
-//			jsp1.validate();
-			jtReaderBook.validate();
 			jtReaderBook.updateUI();
-//			jsp1.updateUI();
 			
 		}else if (a.equals(bReaderMessageUpdate)) {
 			String uname = jtfReaderMessageName.getText();
@@ -1228,6 +1300,13 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 				}
 			}else if (a.equals(jtManagerLib)) {
 				
+			}else if (a.equals(jtRootManager)) {
+				int row = jtRootManager.getSelectedRow();
+				entity.Manager m = (entity.Manager)RMList.get(row);
+				jtfRootManagerMid.setText(String.valueOf(m.getMid()));
+				jtfRootManagerMname.setText(m.getMname());
+				jtfRootManagerMpwd.setText(m.getMpwd());
+				jcb.setSelectedIndex(m.getPowerLevel()-1);
 			}
 		}else if (e.getClickCount()==2) {
 			if (a.equals(jtManagerLib)) {
@@ -1270,7 +1349,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 				}
 			}else if (a.equals(jtRootBook)) {
 				int row =  jtRootBook.getSelectedRow();
-				new changeBook(this, DataBook.get(row));
+				new changeBook(this, DataRootBook.get(row));
 			}
 		}
 	}
@@ -1586,7 +1665,6 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			if (B.getStatus()==1||power!=0) {
 				b = new Vector<Object>();
 				b.add(B.getBid());
-				System.out.println(B.getBid());
 				b.add(B.getName());
 				b.add(B.getbDate());
 				b.add(B.getbPress());
@@ -1605,6 +1683,30 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		columnNames.add("作者");
 		columnNames.add("市场价");
 		columnNames.add("书籍种类");
+	}
+	private void addDataRootManagerTable(){
+		DataRootManager = new Vector<Vector<Object>>();
+		RMList = factory.getManagerActionImpl().selectAllManager();
+		Vector<Object> rm;
+		int n = 0;
+		entity.Manager RM;
+		while (n<RMList.size()) {
+			RM = (entity.Manager)RMList.get(n);
+			rm = new Vector<Object>();
+			rm.add(RM.getMname());
+			if (RM.getPowerLevel()==2) {
+				rm.add("最高权限");
+			}else {
+				rm.add("员工权限");
+			}
+			rm.add(RM.getLastLoginTime());
+			DataRootManager.add(rm);
+			n++;
+		}
+		RMcolumnNames = new Vector<String>();
+		RMcolumnNames.add("员工账号");
+		RMcolumnNames.add("权限等级");
+		RMcolumnNames.add("最后登录时间");
 	}
 }
 
