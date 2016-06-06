@@ -24,8 +24,12 @@ public class ReaderBizImpl implements ReaderBiz {
 		Reader r2 = f.getReader();
 		r2 = f.getReaderDaoImpl().selectReader(reader);
 		if (r2.getRid()!=0) {
-			if (r2.getPwd().equals(reader.getPwd())) {
-				n = 0;
+			if (r2.getStatus()!=0) {
+				if (r2.getPwd().equals(reader.getPwd())) {
+					n = 0;
+				}
+			}else {
+				n = 3;
 			}
 		}else {
 			Manager manager = f.getManager();

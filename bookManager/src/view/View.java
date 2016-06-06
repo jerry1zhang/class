@@ -80,7 +80,11 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	TableModel tm_rootManager;
 	TableModel tm_rootReader;
 	TableModel tm_rootReaderHistory;
+	TableModel tm_ManagerLib;
+	TableModel tm_ManagerReturn;
 	JScrollPane jsp1;
+	String bManagerLibHistory = new String();
+	String bManagerReturnHistory = new String();
 	//判断
 	private JLabel judgment1 = new JLabel();
 	private JLabel judgment2 = new JLabel();
@@ -286,6 +290,13 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 						a = JOptionPane.showConfirmDialog(null, "您是否要注销并返回首页？");
 						switch (a) {
 						case 0:
+							jtfLoginName.setText("");
+							jpfLoginPwd.setText("");
+							jtfRegisterName.setText("");
+							jpfRegisterPwd1.setText("");
+							jpfRegisterPwd2.setText("");
+							jtfRegisterQuestion.setText("");
+							jtfRegisterAnswer.setText("");
 							Root.setVisible(false);
 							Reader.setVisible(false);
 							Manager.setVisible(false);
@@ -321,14 +332,14 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 	}
 	//右键菜单
 	private void join_JPopupMenu(){
-		jmi1.addActionListener(this);
-		jmi2.addActionListener(this);
-		jmi3.addActionListener(this);
-		jpm.add(jmi1);
-		jpm.add(jmi2);
-		jpm.add(jmi3);
-		addMouseListener(this);
-		add(jpm);
+//		jmi1.addActionListener(this);
+//		jmi2.addActionListener(this);
+//		jmi3.addActionListener(this);
+//		jpm.add(jmi1);
+//		jpm.add(jmi2);
+//		jpm.add(jmi3);
+//		addMouseListener(this);
+//		add(jpm);
 	}
 	// 主界面
 	private void join_main(){
@@ -879,6 +890,9 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 					power = manager.getPowerLevel();
 				}
 				break;
+			case 3:
+				JOptionPane.showMessageDialog(this, "用户被锁死，请联系图书馆负责人员");
+				break;
 			default:
 				JOptionPane.showMessageDialog(this, "用户名或密码错误");
 				break;
@@ -936,48 +950,70 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			main.setVisible(true);
 		}else if (a.equals(bNoPwdFind)) {
 			Vector<Object> v = new Vector<Object>();
-			v.add(jtfNoPwdName.getText());
-			v.add(jtfNoPwdQuestion.getText());
-			v.add(jtfNoPwdAnswer.getText());
-			entity.Reader r = factory.getReaderActionImpl().selectReader(v.get(0).toString());
-			if (r.getQuestion().equals(v.get(1).toString())) {
-				if (r.getAnswer().equals(v.get(2).toString())) {
-					this.dispose();
-					new findReader(r, this);
-					main.setVisible(true);
-					NoPwd.setVisible(false);
-					jtfNoPwdName.setText("");
-					jtfNoPwdQuestion.setText("");
-					jtfNoPwdAnswer.setText("");
+			String name = jtfNoPwdName.getText();
+			String question = jtfNoPwdQuestion.getText();
+			String answer = jtfNoPwdAnswer.getText();
+			if (!name.equals("")&&!question.equals("")&&!answer.equals("")) {
+				v.add(name);
+				v.add(question);
+				v.add(answer);
+				entity.Reader r = factory.getReaderActionImpl().selectReader(v.get(0).toString());
+				if (r.getRid()!=0) {
+					if (r.getQuestion().equals(v.get(1).toString())) {
+						if (r.getAnswer().equals(v.get(2).toString())) {
+							this.dispose();
+							new findReader(r, this);
+							main.setVisible(true);
+							NoPwd.setVisible(false);
+							jtfNoPwdName.setText("");
+							jtfNoPwdQuestion.setText("");
+							jtfNoPwdAnswer.setText("");
+						}else {
+							JOptionPane.showMessageDialog(this, "验证回答错误");
+						}
+					}else {
+						JOptionPane.showMessageDialog(this, "验证问题错误");
+					}
 				}else {
-					JOptionPane.showMessageDialog(this, "验证回答错误");
+					JOptionPane.showMessageDialog(this, "无该用户");
 				}
 			}else {
-				JOptionPane.showMessageDialog(this, "验证问题错误");
+				JOptionPane.showMessageDialog(this, "请不要填入空值");
 			}
 		}else if (a.equals(bNoPwdBack)) {
 			NoPwd.setVisible(false);
 			main.setVisible(true);
 		}else if (a.equals(bRootBook)) {
 //			addBookTable();
-			addDataRootBookTable();
-			tm_rootBook  =new DefaultTableModel(DataRootBook, columnNames);
-			jtRootBook = new mytable(tm_rootBook);
-			jtRootBook.setBounds(10, 10, 800, 400);
-			jtRootBook.getTableHeader().setReorderingAllowed(false);
-			jtRootBook.getTableHeader().setResizingAllowed(false);
-			jtRootBook.addMouseListener(this);
-			jpmManagerBookDel.addActionListener(this);
-			jpmManagerBookAdd.addActionListener(this);
-			jpmManagerBookChange.addActionListener(this);
-			jpmManagerBook.add(jpmManagerBookDel);
-			jpmManagerBook.add(jpmManagerBookChange);
-			jpmManagerBook.add(jpmManagerBookAdd);
-			jpmManagerBook.addMouseListener(this);
-			jtRootBook.add(jpmManagerBook);
-			JScrollPane JSP= new JScrollPane(jtRootBook);
-			JSP.setBounds(10, 40, 800, 400);
-			RootBook.add(JSP);
+			if (tm_rootBook==null) {
+				addDataRootBookTable();
+				tm_rootBook  =new DefaultTableModel(DataRootBook, columnNames);
+				jtRootBook = new mytable(tm_rootBook);
+				jtRootBook.setBounds(10, 10, 800, 400);
+				jtRootBook.getTableHeader().setReorderingAllowed(false);
+				jtRootBook.getTableHeader().setResizingAllowed(false);
+				jtRootBook.addMouseListener(this);
+//				jpmManagerBookDel.addActionListener(this);
+//				jpmManagerBookAdd.addActionListener(this);
+//				jpmManagerBookChange.addActionListener(this);
+//				jpmManagerBook.add(jpmManagerBookDel);
+//				jpmManagerBook.add(jpmManagerBookChange);
+//				jpmManagerBook.add(jpmManagerBookAdd);
+//				jpmManagerBook.addMouseListener(this);
+//				jtRootBook.add(jpmManagerBook);
+				JScrollPane JSP= new JScrollPane(jtRootBook);
+				JSP.setBounds(10, 40, 800, 400);
+				RootBook.add(JSP);
+			}else {
+				addDataRootBookTable();
+				((DefaultTableModel)tm_rootBook).setRowCount(DataRootBook.size());
+				for (int i = 0; i < DataRootBook.size(); i++) {
+					for (int j = 0; j < DataRootBook.get(i).size(); j++) {
+						tm_rootBook.setValueAt(DataRootBook.get(i).get(j), i,j);
+					}
+				}
+				jtRootBook.updateUI();
+			}
 			bRootBook.setBackground(Color.LIGHT_GRAY);
 			bRootManager.setBackground(null);
 			bRootReader.setBackground(null);
@@ -986,17 +1022,22 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			RootReader.setVisible(false);
 		}else if (a.equals(bRootManager)) {
 			addDataRootManagerTable();
-			if (tm_rootManager!=null) {
+			if (tm_rootManager==null) {
+				tm_rootManager = new DefaultTableModel(DataRootManager,RMcolumnNames);
+				jtRootManager = new mytable(tm_rootManager);
+				jtRootManager.addMouseListener(this);
+				JScrollPane JSP = new JScrollPane(jtRootManager);
+				JSP.setBounds(10, 10, 300, 400);
+				RootManager.add(JSP);
+			}else {
 				((DefaultTableModel) tm_rootManager).setRowCount(DataRootManager.size());
+				for (int i = 0; i < DataRootManager.size(); i++) {
+					for (int j = 0; j < DataRootManager.get(i).size(); j++) {
+						tm_rootManager.setValueAt(DataRootManager.get(i).get(j), i, j);
+					}
+				}
+				jtRootManager.updateUI();
 			}
-			System.out.println(DataRootManager.get(0).get(0));
-			tm_rootManager = new DefaultTableModel(DataRootManager,RMcolumnNames);
-			jtRootManager = new mytable(tm_rootManager);
-			jtRootManager.addMouseListener(this);
-			JScrollPane JSP = new JScrollPane(jtRootManager);
-			JSP.setBounds(10, 10, 300, 400);
-			RootManager.add(JSP);
-			jtRootManager.updateUI();
 			bRootBook.setBackground(null);
 			bRootManager.setBackground(Color.LIGHT_GRAY);
 			bRootReader.setBackground(null);
@@ -1073,15 +1114,121 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			addBook.init(this);
 		}
 		else if (a.equals(bRootBookSelectName)) {
-			JOptionPane.showInputDialog(this, "请输入你要查询的书名");
+			String name = JOptionPane.showInputDialog(this, "请输入你要查询的书名");
+			if (name!=null) {
+				int n = 0;
+				for (int i = 0; i < DataRootBook.size(); i++) {
+					if (name.equals(DataRootBook.get(i).get(1))) {
+						n++;
+					}
+				}
+				addDataRootBookTable();
+				((DefaultTableModel)tm_rootBook).setRowCount(n);
+				int k = 0;
+				for (int i = 0; i < DataRootBook.size(); i++) {
+					if (name.equals(DataRootBook.get(i).get(1))) {
+						for (int j = 0; j < DataRootBook.get(i).size(); j++) {
+							tm_rootBook.setValueAt(DataRootBook.get(i).get(j), k, j);
+							
+						}
+						k++;
+					}
+				}
+				jtRootBook.updateUI();
+			}
 		}else if (a.equals(bRootBookSelectNo)) {
-			JOptionPane.showInputDialog(this, "请输入你要查询的书籍编号");
+			String name = JOptionPane.showInputDialog(this, "请输入你要查询的书籍编号");
+			if (name!=null) {
+				int n = 0;
+				for (int i = 0; i < DataRootBook.size(); i++) {
+					if (name.equals(DataRootBook.get(i).get(0).toString())) {
+						n++;
+					}
+				}
+				addDataRootBookTable();
+				((DefaultTableModel)tm_rootBook).setRowCount(n);
+				int k = 0;
+				for (int i = 0; i < DataRootBook.size(); i++) {
+					if (name.equals(DataRootBook.get(i).get(0).toString())) {
+						for (int j = 0; j < DataRootBook.get(i).size(); j++) {
+							tm_rootBook.setValueAt(DataRootBook.get(i).get(j), k, j);
+							
+						}
+						k++;
+					}
+				}
+				jtRootBook.updateUI();
+			}
 		}else if (a.equals(bRootBookSelectAuthor)) {
-			JOptionPane.showInputDialog(this, "请输入你要查询的书籍作者");
+			String name = JOptionPane.showInputDialog(this, "请输入你要查询的书籍作者");
+			if (name!=null) {
+				int n = 0;
+				for (int i = 0; i < DataRootBook.size(); i++) {
+					if (name.equals(DataRootBook.get(i).get(4).toString())) {
+						n++;
+					}
+				}
+				addDataRootBookTable();
+				((DefaultTableModel)tm_rootBook).setRowCount(n);
+				int k = 0;
+				for (int i = 0; i < DataRootBook.size(); i++) {
+					if (name.equals(DataRootBook.get(i).get(4))) {
+						for (int j = 0; j < DataRootBook.get(i).size(); j++) {
+							tm_rootBook.setValueAt(DataRootBook.get(i).get(j), k, j);
+							
+						}
+						k++;
+					}
+				}
+				jtRootBook.updateUI();
+			}
 		}else if (a.equals(bRootBookSelectPress)) {
-			JOptionPane.showInputDialog(this, "请输入你要查询的出版社");
+			String name = JOptionPane.showInputDialog(this, "请输入你要查询的出版社");
+			if (name!=null) {
+				
+				int n = 0;
+				for (int i = 0; i < DataRootBook.size(); i++) {
+					if (name.equals(DataRootBook.get(i).get(3).toString())) {
+						n++;
+					}
+				}
+				addDataRootBookTable();
+				((DefaultTableModel)tm_rootBook).setRowCount(n);
+				int k = 0;
+				for (int i = 0; i < DataRootBook.size(); i++) {
+					if (name.equals(DataRootBook.get(i).get(3))) {
+						for (int j = 0; j < DataRootBook.get(i).size(); j++) {
+							tm_rootBook.setValueAt(DataRootBook.get(i).get(j), k, j);
+							
+						}
+						k++;
+					}
+				}
+				jtRootBook.updateUI();
+			}
 		}else if (a.equals(bRootBookSelectKinds)) {
-			JOptionPane.showInputDialog(this, "请输入你要查询的书籍类型");
+			String name = JOptionPane.showInputDialog(this, "请输入你要查询的书籍类型");
+			if (name!=null) {
+				int n = 0;
+				for (int i = 0; i < DataRootBook.size(); i++) {
+					if (name.equals(DataRootBook.get(i).get(6).toString())) {
+						n++;
+					}
+				}
+				addDataRootBookTable();
+				((DefaultTableModel)tm_rootBook).setRowCount(n);
+				int k = 0;
+				for (int i = 0; i < DataRootBook.size(); i++) {
+					if (name.equals(DataRootBook.get(i).get(6))) {
+						for (int j = 0; j < DataRootBook.get(i).size(); j++) {
+							tm_rootBook.setValueAt(DataRootBook.get(i).get(j), k, j);
+							
+						}
+						k++;
+					}
+				}
+				jtRootBook.updateUI();
+			}
 		}
 		else if (a.equals(bRootManagerAdd)) {
 			this.dispose();
@@ -1155,16 +1302,19 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 //			jsp1= new JScrollPane(jtReaderBook);
 //			jsp1.setBounds(10, 40, 800, 400);
 //			ReaderLib.add(jsp1);
-			addBookTable();
-			tm_readerLib = new DefaultTableModel(DataBook, columnNames);
-			jtReaderBook = new mytable();
-			jtReaderBook.setModel(tm_readerLib);
-			jtReaderBook.setBounds(10, 10, 800, 400);
-			jtReaderBook.getTableHeader().setReorderingAllowed(false);
-			jtReaderBook.addMouseListener(this);
-			jsp1= new JScrollPane(jtReaderBook);
-			jsp1.setBounds(10, 40, 800, 400);
-			ReaderLib.add(jsp1);
+			if (tm_readerLib==null) {
+				addBookTable();
+				tm_readerLib = new DefaultTableModel(DataBook, columnNames);
+				jtReaderBook = new mytable();
+				jtReaderBook.setModel(tm_readerLib);
+				jtReaderBook.setBounds(10, 10, 800, 400);
+				jtReaderBook.getTableHeader().setReorderingAllowed(false);
+				jtReaderBook.addMouseListener(this);
+				jsp1= new JScrollPane(jtReaderBook);
+				jsp1.setBounds(10, 40, 800, 400);
+				ReaderLib.add(jsp1);
+			}
+			
 			bReaderLib.setBackground(Color.LIGHT_GRAY);
 			bReaderMessage.setBackground(null);
 			bReaderHistory.setBackground(null);
@@ -1182,13 +1332,24 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			bReaderHistory.setBackground(Color.LIGHT_GRAY);
 			bReaderMessage.setBackground(null);
 			bReaderLib.setBackground(null);
-			addBookHistory(user.getRid());
-			tm_readerHistory = new DefaultTableModel(DataHistory, HcolumnNames);
-			jtReaderHistory = new mytable(tm_readerHistory);
-			jtReaderHistory.setBounds(10, 10, 800, 400);
-			JScrollPane jsp = new JScrollPane(jtReaderHistory);
-			jsp.setBounds(10, 10, 800, 400);
-			ReaderHistory.add(jsp);
+			if (tm_readerHistory==null) {
+				addBookHistory(user.getRid());
+				tm_readerHistory = new DefaultTableModel(DataHistory, HcolumnNames);
+				jtReaderHistory = new mytable(tm_readerHistory);
+				jtReaderHistory.setBounds(10, 10, 800, 400);
+				JScrollPane jsp = new JScrollPane(jtReaderHistory);
+				jsp.setBounds(10, 10, 800, 400);
+				ReaderHistory.add(jsp);
+			}else {
+				addBookHistory(user.getRid());
+				((DefaultTableModel)tm_readerHistory).setRowCount(DataHistory.size());
+				for (int i = 0; i < DataHistory.size(); i++) {
+					for (int j = 0; j < DataHistory.get(i).size(); j++) {
+						tm_readerHistory.setValueAt(DataHistory.get(i).get(j), i, j);
+					}
+				}
+				jtReaderHistory.updateUI();
+			}
 			ReaderLib.setVisible(false);
 			ReaderMessage.setVisible(false);
 			ReaderHistory.setVisible(true);
@@ -1239,7 +1400,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 				JOptionPane.showMessageDialog(this, "选择超过了"+(Rows.length-15)+"书");
 			}
 		}else if (a.equals(bReaderLibSelectName)) {
-			String input = JOptionPane.showInputDialog(this, "123");
+			String input = JOptionPane.showInputDialog(this, "请输入你想要找的书");
 			addBookTable(input);
 			((DefaultTableModel) tm_readerLib).setRowCount(DataBook.size());
 			for (int i = 0; i < DataBook.size(); i++) {
@@ -1249,7 +1410,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			}
 			jtReaderBook.updateUI();
 		}else if (a.equals(bReaderLibSelectKinds)) {
-			
+			//TODO bReaderLibSelectKinds
 		}else if (a.equals(bReaderLibAll)) {
 			addBookTable();
 			((DefaultTableModel) tm_readerLib).setRowCount(DataBook.size());
@@ -1283,12 +1444,13 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			ManagerLib.setVisible(false);
 			ManagerReturn.setVisible(true);
 		}else if (a.equals(bManagerLibUpdate)) {
-			addManagerLibBook(jtfManagerLib.getText());
+			bManagerLibHistory = jtfManagerLib.getText();
+			addManagerLibBook(bManagerLibHistory);
 			if (HList==null) {
 				JOptionPane.showMessageDialog(this, "用户不存在");
 			}else {
-				TableModel tm = new DefaultTableModel(DataManagerLib, HcolumnNames);
-				jtManagerLib = new mytable(tm);
+				tm_ManagerLib = new DefaultTableModel(DataManagerLib, HcolumnNames);
+				jtManagerLib = new mytable(tm_ManagerLib);
 				jtManagerLib.setBounds(0, 0, 800, 400);
 				jtManagerLib.getTableHeader().setReorderingAllowed(false);
 				jtManagerLib.addMouseListener(this);
@@ -1308,22 +1470,31 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			for (int i = 0; i < row.length; i++) {
 				//TODO 可以考虑增加识别出是哪本书出错
 				answer = su.double_bManagerLib(DataManagerLib, row[i]);
-				switch (answer) {
-				case 1:
-					JOptionPane.showMessageDialog(this, "纪录成功");
-					break;
-				default:
-					JOptionPane.showMessageDialog(this, "纪录失败");
-					break;
+			}
+			switch (answer) {
+			case 1:
+				JOptionPane.showMessageDialog(this, "纪录成功");
+				addManagerLibBook(bManagerLibHistory);
+				((DefaultTableModel)tm_ManagerLib).setRowCount(DataManagerLib.size());
+				for (int i = 0; i < DataManagerLib.size(); i++) {
+					for (int j = 0; j < DataManagerLib.get(i).size(); j++) {
+						tm_ManagerLib.setValueAt(DataManagerLib.get(i).get(j), i, j);
+					}
 				}
+				jtManagerLib.updateUI();
+				break;
+			default:
+				JOptionPane.showMessageDialog(this, "纪录失败");
+				break;
 			}
 		}else if (a.equals(bManagerReturnUpdate)) {
-			addManagerReturnBook(jtfManagerReturn.getText());
+			bManagerReturnHistory = jtfManagerReturn.getText();
+			addManagerReturnBook(bManagerReturnHistory);
 			if (HList==null) {
 				JOptionPane.showMessageDialog(this, "用户不存在");
 			}else {
-				TableModel tm = new DefaultTableModel(DataManagerReturn, HcolumnNames);
-				jtManagerReturn = new mytable(tm);
+				tm_ManagerReturn = new DefaultTableModel(DataManagerReturn, HcolumnNames);
+				jtManagerReturn = new mytable(tm_ManagerReturn);
 				jtManagerReturn.setBounds(0, 0, 800, 400);
 				jtManagerReturn.getTableHeader().setReorderingAllowed(false);
 				jtManagerReturn.addMouseListener(this);
@@ -1343,14 +1514,28 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			for (int i = 0; i < row.length; i++) {
 				//TODO 可以考虑增加识别出是哪本书出错
 				answer = su.double_bManagerReturn(DataManagerReturn, row[i]);
-				switch (answer) {
-				case 1:
-					JOptionPane.showMessageDialog(this, "纪录成功");
-					break;
-				default:
-					JOptionPane.showMessageDialog(this, "纪录失败");
-					break;
+			}
+			switch (answer) {
+			case 1:
+				double money = 0;
+				java.util.Date d1 = new java.util.Date();
+				Date d = new Date(d1.getTime());
+				for (int i = 0; i < row.length; i++) {
+					money += factory.getBookActionImpl().BookLibMoney(factory.getBookActionImpl().BookLibDay((Date) DataManagerReturn.get(row[i]).get(5), d));
 				}
+				JOptionPane.showMessageDialog(this, "应付款"+money+"元");
+				addManagerReturnBook(bManagerReturnHistory);
+				((DefaultTableModel)tm_ManagerReturn).setRowCount(DataManagerReturn.size());
+				for (int i = 0; i < DataManagerReturn.size(); i++) {
+					for (int j = 0; j < DataManagerReturn.get(i).size(); j++) {
+						tm_ManagerReturn.setValueAt(DataManagerReturn.get(i).get(j), i, j);
+					}
+				}
+				jtManagerReturn.updateUI();
+				break;
+			default:
+				JOptionPane.showMessageDialog(this, "纪录失败");
+				break;
 			}
 		}else if (a.equals(jpmManagerBookAdd)) {
 			//TODO addbook
@@ -1662,6 +1847,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			h.add(H.getReader().getAccounts());
 			h.add(H.getLibDate());
 			h.add(H.getReturnDate());
+			h.add(H.getHdate());
 			DataHistory.add(h);
 			n++;
 		}
@@ -1673,6 +1859,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		HcolumnNames.add("读者用户名");
 		HcolumnNames.add("借阅时间");
 		HcolumnNames.add("归还时间");
+		HcolumnNames.add("发生时间");
 	}
 	private void addManagerLibBook(String name){
 		DataManagerLib = new Vector<Vector<Object>>();
@@ -1696,6 +1883,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 				h.add(H.getReader().getAccounts());
 				h.add(H.getLibDate());
 				h.add(H.getReturnDate());
+				h.add(H.getHdate());
 				DataManagerLib.add(h);
 			}
 			n++;
@@ -1708,6 +1896,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		HcolumnNames.add("读者用户名");
 		HcolumnNames.add("借阅时间");
 		HcolumnNames.add("归还时间");
+		HcolumnNames.add("发生时间");
 	}
 	private void addManagerReturnBook(String name){
 		DataManagerReturn = new Vector<Vector<Object>>();
@@ -1731,6 +1920,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 				h.add(H.getReader().getAccounts());
 				h.add(H.getLibDate());
 				h.add(H.getReturnDate());
+				h.add(H.getHdate());				
 				DataManagerReturn.add(h);
 			}
 			n++;
@@ -1743,6 +1933,7 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		HcolumnNames.add("读者用户名");
 		HcolumnNames.add("借阅时间");
 		HcolumnNames.add("归还时间");
+		HcolumnNames.add("发生时间");
 	}
 	private void addDataRootBookTable(){
 		DataRootBook = new Vector<Vector<Object>>();
@@ -1836,8 +2027,13 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			rrh.add(RRH.getHdate());
 			rrh.add(RRH.getLibDate());
 			rrh.add(RRH.getReturnDate());
-			rrh.add(factory.getBookActionImpl().BookLibDay(RRH.getLibDate(), RRH.getReturnDate()));
-			rrh.add(factory.getBookActionImpl().BookLibMoney(factory.getBookActionImpl().BookLibDay(RRH.getLibDate(), RRH.getReturnDate())));
+			if (RRH.getLibDate()!=null&&RRH.getReturnDate()!=null) {
+				rrh.add(factory.getBookActionImpl().BookLibDay(RRH.getLibDate(), RRH.getReturnDate()));
+				rrh.add(factory.getBookActionImpl().BookLibMoney(factory.getBookActionImpl().BookLibDay(RRH.getLibDate(), RRH.getReturnDate())));
+			}else {
+				rrh.add(null);
+				rrh.add(null);
+			}
 			rrh.add(RRH.getStatus());
 			DataRootReaderHistory.add(rrh);
 			n++;

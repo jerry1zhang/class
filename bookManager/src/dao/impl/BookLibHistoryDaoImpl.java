@@ -23,12 +23,13 @@ public class BookLibHistoryDaoImpl implements BookLibHistoryDao{
 		boolean flag = false;
 		int n = 0;
 		try {
-			String sql = "insert into bookLibHistory(bid,rid,LibDate,ReturnDate) value(?,?,?,?)";
+			String sql = "insert into bookLibHistory(bid,rid,LibDate,ReturnDate,HDate) value(?,?,?,?,?)";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, bookLibHistory.getBook().getBid());
 			ps.setInt(2, reader.getRid());
 			ps.setDate(3, bookLibHistory.getLibDate());
 			ps.setDate(4, bookLibHistory.getReturnDate());
+			ps.setDate(5, bookLibHistory.getHdate());
 			n = ps.executeUpdate();
 			if (n!=0) {
 				flag = true;
