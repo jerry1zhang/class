@@ -17,4 +17,6 @@ public interface ManagerAction {
 	public ArrayList<Object> selectAllReaderHistory(Reader reader);
 	public boolean addManager(Vector<Object> Manager);
 	public boolean changeManager(Vector<Object> Manager);
+	public boolean changeReader(Vector<Object> reader);
+	public boolean delReader(Vector<Object> reader);
 }

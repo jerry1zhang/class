@@ -37,13 +37,17 @@ public class ReaderBizImpl implements ReaderBiz {
 	}
 
 	public boolean matching(Reader reader) {
-		ReaderDaoImpl rdi = f.getReaderDaoImpl();
 		boolean flag = false;
-		Reader r2 = f.getReader();
-		r2 = rdi.selectReader(reader);
-		//if (!r2.getAccounts().equals("")) {
+		ArrayList<Object> r = f.getReaderDaoImpl().allReader();
+		int n = 0;
+		for (int i = 0; i < r.size(); i++) {
+			if (reader.getAccounts().equals(((Reader)r.get(i)).getAccounts())) {
+				n++;
+			}
+		}
+		if (n==0) {
 			flag = true;
-		//}
+		}
 		return flag;
 	}
 

@@ -10,5 +10,6 @@ public interface ReaderDao {
 	public boolean updateReader(Reader reader);
 	public Reader selectReader(Reader reader);
 	public boolean easyUpdateReader(Reader reader);
+	public boolean statusUpdateReader(Reader reader);
 	public ArrayList<Object> allReader();
 }

@@ -67,5 +67,20 @@ public class ManagerActionImpl implements ManagerAction {
 	public ArrayList<Object> selectAllReaderHistory(Reader reader) {
 		return f.getBookBizImpl().readerHistory(reader);
 	}
+	public boolean changeReader(Vector<Object> reader) {
+		Reader r = new Reader();
+		r.setAccounts(reader.get(0).toString());
+		r.setPwd(reader.get(1).toString());
+		r.setName(reader.get(2).toString());
+		r.setIDcard(reader.get(3).toString());
+		r.setQuestion(reader.get(4).toString());
+		r.setAnswer(reader.get(5).toString());
+		return f.getManagerBizImpl().changeReader(r);
+	}
+	public boolean delReader(Vector<Object> reader) {
+		Reader r = new Reader();
+		r.setAccounts(reader.get(0).toString());
+		return f.getManagerBizImpl().statusReader(0, r);
+	}
 
 }

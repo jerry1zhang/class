@@ -1031,9 +1031,26 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			RootManager.setVisible(false);
 			RootReader.setVisible(true);
 		}else if (a.equals(bRootReaderUpdate)) {
-			//TODO bRootReaderUpdate
+			Vector<Object> v = new Vector<Object>();
+			v.add(jtfRootReaderAccounts.getText());
+			v.add(jtfRootReaderPwd.getText());
+			v.add(jtfRootReaderName.getText());
+			v.add(jtfRootReaderIdcard.getText());
+			v.add(jtfRootReaderQuestion.getText());
+			v.add(jtfRootReaderAnswer.getText());
+			if (factory.getManagerActionImpl().changeReader(v)) {
+				JOptionPane.showMessageDialog(this, "ÐÞ¸Ä³É¹¦");
+			}else {
+				JOptionPane.showMessageDialog(this, "ÐÞ¸ÄÊ§°Ü");
+			}
 		}else if (a.equals(bRootReaderDel)) {
-			//TODO bRootReaderDel
+			Vector<Object> v = new Vector<Object>();
+			v.add(jtfRootReaderAccounts.getText());
+			if (factory.getManagerActionImpl().delReader(v)) {
+				JOptionPane.showMessageDialog(this, "É¾³ý³É¹¦");
+			}else {
+				JOptionPane.showMessageDialog(this, "É¾³ýÊ§°Ü");
+			}
 		}else if (a.equals(bRootReaderClear)) {
 			jtfRootReaderAccounts.setText("");
 			jtfRootReaderPwd.setText("");

@@ -34,7 +34,7 @@ public class ReaderDaoImpl implements ReaderDao {
 				flag = true;
 			}
 		} catch (SQLException e) {
-			// TODO: handle exception
+			e.getStackTrace();
 		}
 		return flag;
 	}
@@ -66,16 +66,16 @@ public class ReaderDaoImpl implements ReaderDao {
 		Connection conn = dbh.getConnection();
 		PreparedStatement ps = null;
 		int n = 0;
-		String sql = "update reader set pwd=?,name=?,IDcard=?,question=?,answer=? where rid = ?";
+		String sql = "update reader set pwd=?,name=?,IDcard=?,question=?,answer=? where accounts = ?";
 		try {
 			ps = conn.prepareStatement(sql);
-			System.out.println(reader.getQuestion());
 			ps.setString(1, reader.getPwd());
+			System.out.println(reader.getPwd());
 			ps.setString(2, reader.getName());
 			ps.setString(3, reader.getIDcard());
 			ps.setString(4, reader.getQuestion());
 			ps.setString(5, reader.getAnswer());
-			ps.setInt(6, reader.getRid());
+			ps.setString(6, reader.getAccounts());
 			n = ps.executeUpdate();
 			if (n!=0) {
 				flag = true;
@@ -171,6 +171,28 @@ public class ReaderDaoImpl implements ReaderDao {
 		}
 		dbh.closeConnection(rs, ps, conn);
 		return r;
+	}
+
+	public boolean statusUpdateReader(Reader reader) {
+		boolean flag = false;
+		DBhelper_mysql dbh = f.getDBhelper_mysql();
+		Connection conn = dbh.getConnection();
+		PreparedStatement ps = null;
+		int n = 0;
+		String sql = "update reader set status=? where accounts = ?";
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, reader.getStatus());
+			ps.setString(2, reader.getAccounts());
+			n = ps.executeUpdate();
+			if (n!=0) {
+				flag = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		dbh.closeConnection(null, ps, conn);
+		return flag;
 	}
 
 }

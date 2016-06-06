@@ -44,6 +44,13 @@ public class ManagerBizImpl implements ManagerBiz {
 	public boolean changeManager(Manager manager) {
 		return f.getManagerDaoImpl().updateManager(manager);
 	}
+	public boolean changeReader(Reader reader) {
+		return f.getReaderDaoImpl().updateReader(reader);
+	}
+	public boolean statusReader(int status,Reader reader) {
+		reader.setStatus(status);
+		return f.getReaderDaoImpl().statusUpdateReader(reader);
+	}
 
 	
 }
