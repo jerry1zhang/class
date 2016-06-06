@@ -19,4 +19,5 @@ public interface ManagerAction {
 	public boolean changeManager(Vector<Object> Manager);
 	public boolean changeReader(Vector<Object> reader);
 	public boolean delReader(Vector<Object> reader);
+	public boolean backReader(Vector<Object> reader);
 }

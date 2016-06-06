@@ -198,7 +198,8 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 //	private JButton bRootManagerUpdate = new JButton("管理员记录修改");
 	private JButton bRootReaderUpdate = new JButton("修改");
 	private JButton bRootReaderClear = new JButton("清空");
-	private JButton bRootReaderDel = new JButton("删除");
+	private JButton bRootReaderDel = new JButton("停用");
+	private JButton bRootReaderBack = new JButton("回复");
 	private JButton bRootReaderNew = new JButton("<==更新数据");
 	private JButton bRootManagerAdd = new JButton("新增纪录");
 	private JButton bRootManagerUpdate = new JButton("提交修改");
@@ -361,9 +362,9 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		bLogin.addActionListener(this);
 		bNoPwd.setBounds(600, 400, 100, 30);
 		bNoPwd.addActionListener(this);
-		bTest.setBounds(700, 400, 100, 30);
-		bTest.addActionListener(this);
-		main.add(bTest);
+//		bTest.setBounds(700, 400, 100, 30);
+//		bTest.addActionListener(this);
+//		main.add(bTest);
 		main.add(bNoPwd);
 		main.add(bRegister);
 		main.add(bLogin);
@@ -682,6 +683,9 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 		bRootReaderClear.setBounds(x+2*width, y, width, height);
 		bRootReaderClear.addActionListener(this);
 		RootReader.add(bRootReaderClear);
+		bRootReaderBack.setBounds(x+3*width, y, width, height);
+		bRootReaderBack.addActionListener(this);
+		RootReader.add(bRootReaderBack);
 		
 		RootReader.setVisible(false);
 		Root.add(RootReader);
@@ -1108,6 +1112,14 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 				}
 			}
 			jtRootReader.updateUI();
+		}else if (a.equals(bRootReaderBack)) {
+			Vector<Object> v = new Vector<Object>();
+			v.add(jtfRootReaderAccounts.getText());
+			if (factory.getManagerActionImpl().backReader(v)) {
+				JOptionPane.showMessageDialog(this, "回复成功");
+			}else {
+				JOptionPane.showMessageDialog(this, "恢复失败");
+			}
 		}
 		else if (a.equals(bRootBookCreate)) {
 			addBook addBook = new addBook();
@@ -1411,6 +1423,28 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 			jtReaderBook.updateUI();
 		}else if (a.equals(bReaderLibSelectKinds)) {
 			//TODO bReaderLibSelectKinds
+			String name = JOptionPane.showInputDialog(this, "请输入你要查询的书籍类型");
+			if (name!=null) {
+				int n = 0;
+				for (int i = 0; i < DataBook.size(); i++) {
+					if (name.equals(DataBook.get(i).get(6).toString())) {
+						n++;
+					}
+				}
+				addBookTable();
+				((DefaultTableModel)tm_readerLib).setRowCount(n);
+				int k = 0;
+				for (int i = 0; i < DataBook.size(); i++) {
+					if (name.equals(DataBook.get(i).get(6))) {
+						for (int j = 0; j < DataBook.get(i).size(); j++) {
+							tm_readerLib.setValueAt(DataBook.get(i).get(j), k, j);
+							
+						}
+						k++;
+					}
+				}
+				jtReaderBook.updateUI();
+			}
 		}else if (a.equals(bReaderLibAll)) {
 			addBookTable();
 			((DefaultTableModel) tm_readerLib).setRowCount(DataBook.size());

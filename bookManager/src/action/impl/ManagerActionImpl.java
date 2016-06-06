@@ -82,5 +82,10 @@ public class ManagerActionImpl implements ManagerAction {
 		r.setAccounts(reader.get(0).toString());
 		return f.getManagerBizImpl().statusReader(0, r);
 	}
+	public boolean backReader(Vector<Object> reader) {
+		Reader r = new Reader();
+		r.setAccounts(reader.get(0).toString());
+		return f.getManagerBizImpl().statusReader(1, r);
+	}
 
 }
