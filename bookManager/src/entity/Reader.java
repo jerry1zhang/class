@@ -12,6 +12,13 @@ public class Reader {
 	private int rkid;//°®ºÃ
 	private String question;
 	private String answer;
+	private int status;
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
 	public String getQuestion() {
 		return question;
 	}

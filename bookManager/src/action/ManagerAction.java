@@ -13,6 +13,8 @@ public interface ManagerAction {
 	public boolean ManagerReturnHistoryUpdate(int bno);
 	public Manager selectManager(String name);
 	public ArrayList<Object> selectAllManager();
+	public ArrayList<Object> selectAllReader();
+	public ArrayList<Object> selectAllReaderHistory(Reader reader);
 	public boolean addManager(Vector<Object> Manager);
 	public boolean changeManager(Vector<Object> Manager);
 }

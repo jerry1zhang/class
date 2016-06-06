@@ -61,5 +61,11 @@ public class ManagerActionImpl implements ManagerAction {
 		manager.setPowerLevel(Integer.valueOf(Manager.get(3).toString()));
 		return f.getManagerBizImpl().changeManager(manager);
 	}
+	public ArrayList<Object> selectAllReader() {
+		return f.getReaderBizImpl().allReader();
+	}
+	public ArrayList<Object> selectAllReaderHistory(Reader reader) {
+		return f.getBookBizImpl().readerHistory(reader);
+	}
 
 }

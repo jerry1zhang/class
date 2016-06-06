@@ -1,5 +1,7 @@
 package biz.impl;
 
+import java.util.ArrayList;
+
 import biz.ReaderBiz;
 import dao.impl.ReaderDaoImpl;
 import entity.Manager;
@@ -63,6 +65,10 @@ public class ReaderBizImpl implements ReaderBiz {
 
 	public boolean changeReader(Reader reader) {
 		return f.getReaderDaoImpl().updateReader(reader);
+	}
+
+	public ArrayList<Object> allReader() {
+		return f.getReaderDaoImpl().allReader();
 	}
 
 }

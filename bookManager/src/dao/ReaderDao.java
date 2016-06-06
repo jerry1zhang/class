@@ -1,5 +1,7 @@
 package dao;
 
+import java.util.ArrayList;
+
 import entity.Reader;
 
 public interface ReaderDao {
@@ -8,4 +10,5 @@ public interface ReaderDao {
 	public boolean updateReader(Reader reader);
 	public Reader selectReader(Reader reader);
 	public boolean easyUpdateReader(Reader reader);
+	public ArrayList<Object> allReader();
 }

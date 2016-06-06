@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.util.ArrayList;
 
 import dao.ReaderDao;
 import entity.Reader;
@@ -93,7 +93,7 @@ public class ReaderDaoImpl implements ReaderDao {
 		PreparedStatement ps = null;
 		ResultSet rs= null;
 		try {
-			String sql = "select rid,accounts,pwd,name,IDcard,LastLoginTime,rkid,question,answer from reader where accounts = ?";
+			String sql = "select rid,accounts,pwd,name,IDcard,LastLoginTime,rkid,question,answer,status from reader where accounts = ?";
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, reader.getAccounts());
 			reader = f.getReader();
@@ -108,6 +108,7 @@ public class ReaderDaoImpl implements ReaderDao {
 				reader.setRkid(rs.getInt("rkid"));
 				reader.setQuestion(rs.getString("question"));
 				reader.setAnswer(rs.getString("answer"));
+				reader.setStatus(rs.getInt("status"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -138,6 +139,38 @@ public class ReaderDaoImpl implements ReaderDao {
 		}
 		dbh.closeConnection(null, ps, conn);
 		return flag;
+	}
+
+	public ArrayList<Object> allReader() {
+		DBhelper_mysql dbh = f.getDBhelper_mysql();
+		Connection conn = dbh.getConnection();
+		PreparedStatement ps = null;
+		ArrayList<Object> r = new ArrayList<Object>();
+		Reader reader;
+		ResultSet rs= null;
+		try {
+			String sql = "select rid,accounts,pwd,name,IDcard,LastLoginTime,rkid,question,answer,status from reader";
+			ps = conn.prepareStatement(sql);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				reader = f.getReader();
+				reader.setRid(rs.getInt("rid"));
+				reader.setAccounts(rs.getString("accounts"));
+				reader.setPwd(rs.getString("pwd"));
+				reader.setName(rs.getString("name"));
+				reader.setIDcard(rs.getString("IDcard"));
+				reader.setLastLoginTime(rs.getDate("LastLoginTime"));
+				reader.setRkid(rs.getInt("rkid"));
+				reader.setQuestion(rs.getString("question"));
+				reader.setAnswer(rs.getString("answer"));
+				reader.setStatus(rs.getInt("status"));
+				r.add(reader);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		dbh.closeConnection(rs, ps, conn);
+		return r;
 	}
 
 }

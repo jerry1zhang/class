@@ -1,5 +1,7 @@
 package biz;
 
+import java.util.ArrayList;
+
 import entity.Reader;
 
 public interface ReaderBiz {
@@ -10,4 +12,5 @@ public interface ReaderBiz {
 	public boolean information(Reader reader);
 	public Reader selectReader(Reader reader);
 	public boolean changeReader(Reader reader);
+	public ArrayList<Object> allReader();
 }
