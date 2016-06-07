@@ -928,26 +928,30 @@ public class View extends JFrame implements ActionListener,KeyListener,MouseList
 //			String time=format.format(date);
 			String er = "";
 			int r = 0;
-			for (int i = 0; i < error.length; i++) {
-				if (!error[i].equals("")) {
-					er = er+error[i]+"\n";
+			if (!name.equals("")&&!pwd.equals("")&&!Question.equals("")&&!Answer.equals("")) {
+				for (int i = 0; i < error.length; i++) {
+					if (!error[i].equals("")) {
+						er = er+error[i]+"\n";
+					}
 				}
-			}
-			if (er.equals("")) {
-				r = factory.getReaderActionImpl().Register(name, pwd, Question, Answer,date);
-				switch (r) {
-				case 1:
-					JOptionPane.showMessageDialog(this, "注册成功");
-					break;
-				case 2:
-					JOptionPane.showMessageDialog(this, "用户名重复");
-					break;
-				default:
-					JOptionPane.showMessageDialog(this, "未知原因导致的错误，请查看网络是否连接");
-					break;
+				if (er.equals("")) {
+					r = factory.getReaderActionImpl().Register(name, pwd, Question, Answer,date);
+					switch (r) {
+					case 1:
+						JOptionPane.showMessageDialog(this, "注册成功");
+						break;
+					case 2:
+						JOptionPane.showMessageDialog(this, "用户名重复");
+						break;
+					default:
+						JOptionPane.showMessageDialog(this, "未知原因导致的错误，请查看网络是否连接");
+						break;
+					}
+				}else {
+					JOptionPane.showMessageDialog(this, er);
 				}
 			}else {
-				JOptionPane.showMessageDialog(this, er);
+				JOptionPane.showMessageDialog(this, "请不要填入空值");
 			}
 		}else if (a.equals(bRegisterBack)) {
 			Register.setVisible(false);
