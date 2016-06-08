@@ -69,7 +69,7 @@ public class BookActionImpl implements BookAction {
 	public double BookLibMoney(int day) {
 		double mo = 0;
 		if (day>60) {
-			mo = day * (day-60);
+			mo = 0.2 * (day-60);
 		}
 		return mo;
 	}
